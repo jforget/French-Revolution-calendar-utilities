@@ -1,0 +1,543 @@
+# -*- encoding: utf-8; indent-tabs-mode: nil -*-
+#
+# Generating tests files for various programs dealing with the French Revolutionary calendar
+# Génération des fichiers de test pour divers programmes de calendrier républicain
+#
+# Copyright (C) 2012, Jean Forget
+#
+# Author: Jean Forget
+# Maintainer: Jean Forget
+# Keywords: French Revolution, calendar
+#
+# This program is free software; you can redistribute it and modify
+# it under the terms of Perl:
+# -- either the GNU General Public License as published by
+#    the Free Software Foundation; version 1, or (at your option)
+#    any later version,
+# -- or the Artistic Licence.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Emacs; see the file COPYING.  If not, write to the
+# Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301, USA.
+
+use v5.10;
+use strict;
+use warnings;
+use Getopt::Long;
+use DateTime::Calendar::FrenchRevolutionary;
+
+my $nb41     = 20;
+
+Getopt::Long::GetOptions('nb41:i'  => \$nb41,
+    ) or die "Problème avec les options";
+
+my $num_test =  0;
+
+my @sortie = (
+        [ 'test41', \&gen41 ],
+        [ 'verif-base.el', \&gen_lisp1 ],
+        [ 'verif-evol.el', \&gen_lisp2 ],
+    );
+for (@sortie) {
+  open my $f, '>', $_->[0]
+    or die "ouverture $_->[0] : $!";
+  push @$_, $f;
+  my $s = $_->[1];
+  print $f $s->(0);
+}
+for (qw/ 17920922 17931023 17940727 17941123 17951005
+         17951225 17970124 17980224 17991109 18010329
+         18040430 18070601 18100703 18130804 18160904
+         20000101 20010511 
+         17920922 17930921 17930922 17940921 17940922 17950922
+         17950923 17960921 17960922 17970921 17970922 17990922
+         17990923 18000922 18000923 18010922 18010923 18230922
+         18230923 18240922 18240923 18250922 18250923 18920921
+         18920922 19000922 19000923 19920921 19920922 20000921
+         20000922 20920920 20920921 21000921 21000922 21920921
+         21920922 21930921 21990922 22000922
+     /) {
+  gen(++$num_test, $_);
+}
+for (@sortie) {
+  my ($nom, $sub, $fh) = @$_;
+  print $fh $sub->(-1);
+  close $fh
+    or die "fermeture $nom : $!";
+}
+
+sub gen {
+  my ($num_test, $aaaammjj) = @_;
+  my ($a, $m, $j) = unpack "A4A2A2", $aaaammjj;
+  my $dg = DateTime->new(year => $a, month => $m, day => $j,
+             time_zone => 'Europe/Paris', locale => 'fr');
+  my $dr = DateTime::Calendar::FrenchRevolutionary->from_object(object => $dg);
+
+  for (@sortie) {
+    my ($nom, $sub, $fh) = @$_;
+    print $fh $sub->($num_test, $dg, $dr);
+  }
+}
+
+sub gen41 {
+  my ($num_test, $dg, $dr) = @_;
+  state $num_fic    = 0; # The first time I use a state variable since v5.10 is out!
+  state $must_close = 0;
+
+  return ''
+      if $num_test == 0;
+
+  my $res = '';
+  if ($num_test != -1) {
+    if ($num_test % $nb41 == 1) {
+      $num_fic = 1 + int($num_test / $nb41);
+      $res = <<"EOF";
+- section: testcf$num_fic
+  testcf$num_fic.txt: 1
+- code: |
+    lbl "TESTCF$num_fic"
+    lbl 00
+    cf 00
+EOF
+      $must_close = 1;
+    }
+    $res .= '    ' . $dg->strftime("%d.%m%Y\n");
+    my $ch = uc($dr->strftime('              "%d %b %Y"%n'));
+    $ch =~ s/"0/"/;
+    $ch =~ s/ 0*/ /g;
+    $res .= '    ' . $ch;
+    $res .= ' ' x 30 . "xeq 01\n";
+  }
+  if (($num_test == -1 && $must_close) || $num_test % $nb41 == 0) {
+    $res .= <<"EOF";
+    stop
+    gto 00
+    rtn
+    |check|
+    end
+EOF
+    $must_close = 0;
+  }
+
+  if ($num_test == -1) {
+    $res .= "**** ci-dessous, copier-coller au début du fichier destination ****\n";
+    for (1 .. $num_fic) {
+      $res .= "testcf$_.txt: code41\n";
+    }
+
+  }
+  return $res;
+}
+
+sub gen_lisp1 {
+  my ($num_test, $dg, $dr) = @_;
+
+  if ($num_test == 0) {
+    return lisp_debut();
+  }
+  if ($num_test == -1) {
+    return lisp_fin();
+  }
+  my $ch;
+
+  my $a = $dg->year;
+  my $m = $dg->month;
+  my $j = $dg->day;
+  $m = " $m" if $m < 10;
+  $j = " $j" if $j < 10;
+  if ($dr->month != 13) {
+    $ch = $dr->strftime('"%d %B an %Y de la Révolution"');
+    $ch = "    (cal-french-check-unit '($a $m $j) $ch)\n";
+    $ch =~ s/"0/"/;
+    $ch =~ s/ 0*/ /g;
+    return $ch;
+  }
+  else {
+    $ch = $dr->strftime('"%EJ de l\'Année %Y de la Révolution"');
+    $ch = "    (cal-french-check-unit '($a $m $j) $ch)\n";
+    $ch =~ s/"0/"/;
+    $ch =~ s/ 0*/ /g;
+    return $ch;
+  }
+}
+
+sub gen_lisp2 {
+  my ($num_test, $dg, $dr) = @_;
+
+  return lisp_debut()
+    if $num_test == 0;
+  return lisp_fin()
+    if $num_test == -1;
+  my $ch;
+
+  my $a = $dg->year;
+  my $m = $dg->month;
+  my $j = $dg->day;
+  $m = " $m" if $m < 10;
+  $j = " $j" if $j < 10;
+  $ch = $dr->strftime('"%d %B an %Y %Ej"');
+  $ch = "    (cal-french-check-unit '($a $m $j) $ch)\n";
+  $ch =~ s/"0/"/;
+  $ch =~ s/ 0*/ /g;
+  return $ch;
+}
+
+sub lisp_debut {
+  return <<"EOF";
+#!/usr/bin/emacs --script
+; -*- encoding: utf-8; indent-tabs-mode: nil -*-
+(require 'cal-french)
+(defvar cal-french-check-num 0)
+(defun ymd-to-mdy (date)
+  "Convert the date from the logical format to the funny format"
+  (let ((y (car date))
+        (m (cadr date))
+        (d (nth 2 date)))
+        (list m d y))
+)
+(defun cal-french-check-unit (date expected-string)
+  "Unit check for cal-french.el"
+  (let ((actual-string (calendar-french-date-string (ymd-to-mdy date))))
+         (setq cal-french-check-num (1+ cal-french-check-num))
+         (cond ((equal expected-string actual-string)
+                    (princ (format "ok %d\n" cal-french-check-num)))
+               (t
+                    (princ (format "not ok %d %s %s\n" cal-french-check-num actual-string expected-string)))
+         )
+  )
+)
+(defun cal-french-check ()
+   "Self-check for cal-french.el"
+EOF
+}
+sub lisp_fin {
+  return <<"EOF";
+)
+(message "%s" "c est parti\n")
+(cal-french-check)
+EOF
+}
+__END__ 
+
+=encoding utf8
+
+=head1 NAME / NOM
+
+gen-tests -- a program to generate tests files for various programs dealing with the French Revolutionary calendar
+
+gen-tests -- un programme pour générer les fichiers de tests pour divers programmes de calendrier républicain
+
+=head1 UTILISATION
+
+gen-tests --nb41=8
+
+=head1 CALL PARAMETERS / PARAMÈTRES D'APPEL
+
+=over 4
+
+=item * nb41
+
+The number of tests in a HP-41 code file. All the tests will
+be in the same HPWEB file, but this HPWEB file will generate
+several code files. We cannot put all the tests into the
+same code file, because the memory capacity of HP-41, even
+the 41CX model, is restricted. A complete test will consist
+in loading a test file into the HP-41, running it, deleting
+it, and doing the same with the other test files in turn.
+
+Default value: 20.
+
+Nombre de tests dans un fichier code pour la HP-41. Tous les tests figureront
+dans le même fichier HPWEB, mais ce fichier HPWEB permettra de 
+générer plusieurs fichiers de code différents. Il n'est pas possible
+de mettre tous les tests dans le même fichier de code, car la 
+capacité de la mémoire de la HP-41, même HP-41CX, est limitée.
+Le test complet consistera à charger et exécuter successivement
+chacun des fichiers de code.
+
+Valeur par défaut : 20
+
+=back
+
+=head1 DESCRIPTION (ENGLISH)
+
+This program generates test files for various
+programs converting Gregorian dates into the
+French Revolutionary calendar. The contents of
+these tests is generated using the Perl module
+F<DateTime::Calendar::FrenchRevolutionary>.
+
+The case of the program testing F<cal-french.el> 
+deserves an explanation. What a testing program achieves
+is telling whether the testing program and the 
+tested program agree. If all results are C<ok>,
+that means that both programs are right, or
+that both programs are wrong.
+If at least one result is C<not ok>, that means
+that either the testing program is right and the
+tested program is wrong, or the testing program is
+wrong and the tested program is right, or both
+programs are wrong, but differently.
+
+Usually, to paraphrase Hoare, the testing program
+"is so simple that there is obviously no bugs".
+So the testing program has to be right.
+A C<not ok> program therefore shows that the
+tested program is wrong and a full series
+of C<ok> results shows tha the tested program
+is right (provided the data coverage provided by
+the testing program is wide enough, but I will not
+deal with this question here).
+
+This is not so with the program testing F<cal-french.el>.
+To continue paraphrasing Hoare, this testing program,
+F<verif-base.el>,
+based on F<DateTime::Calendar::FrenchRevolutionary>,
+"is so complicated that there is no obvious bug".
+So if a C<not ok> result appears, there is a very remote
+chance that  F<cal-french.el> is wrong, and a much
+greater probability that the testing program
+and its module F<DateTime::Calendar::FrenchRevolutionary>
+is wrong. I have more trust in Edward M. Reingold's
+and Glenn Morris's program with its large audience
+and its long presence in Emacs (since 1988)
+than in my module, with a small audience
+and which has been present for 9 years, 
+including a 5-year lethargy.
+
+On the other hand, once the so-called tests of F<cal-french.el>
+will have shown that F<DateTime::Calendar::FrenchRevolutionary>
+is right, any C<not ok> result from the other testing
+programs will show that the tested program is wrong.
+
+Each test file is described with a 2-element list, which
+becomes a 3-element list when the program runs.
+The first element is the filename. The third element
+is the filehandle. The second element is a coderef, 
+This coderef is called in three circumstances:
+
+=over 4
+
+=item 1
+
+Just after the file is opened, to give the testing
+program's prologue. There is one parameter, a number
+with value 0.
+
+=item 2
+
+For each tested date. There are three parameters:
+the test number, from 1 to I<n>, the F<DateTime>
+object for the Gregorian Date and the
+F<DateTime::Calendar::FrenchRevolutionary>
+object for the French Revolutionary date.
+
+=item 3
+
+Just before the output file is closed, to give the
+testing program's conclusion. There is one parameter,
+the number -1.
+
+=back
+
+The program produces the following files:
+
+=over 4
+
+=item F<verif-base.el>
+
+As explained above, this program seems to check
+Emacs' F<cal-french.el>, although the real result
+is a check of ma module 
+F<DateTime::Calendar::FrenchRevolutionary>.
+This program can be run from the Unix command line.
+I have not checked yet how to run it from within Emacs
+(of course, you can open a shell window inside Emacs,
+but there is surely a better way).
+
+=item F<verif-evol.el>
+
+This program checks an extended F<cal-french.el>,
+where the feasts are available for all the days, 
+not only for the additional days at the end
+of the year.
+Like  F<verif-base.el>, it can be run from
+a Unix command-line.
+
+=item F<test41>
+
+This file provides a number of lines to
+copy into an HPWEB file which will generate
+test files for the HP-41 program F<CALFR>.
+The file contains two blocks of lines which
+must be copied-pasted into the HPWEB file.
+
+
+=back
+
+=head1 DESCRIPTION (FRANCAIS)
+
+Ce programme génère des fichiers de tests pour des programmes
+de conversion en calendrier républicain en divers langages
+de programmation. Le contenu de ces tests est généré en utilisant
+le module Perl F<DateTime::Calendar::FrenchRevolutionary>.
+
+Le cas du programme de tests pour la version de base de
+F<cal-french.el> mérite une explication.
+Ce que fait un programme de tests en général est juste
+de déterminer si le programme testé et le programme
+de tests sont d'accord. Si tous les résultats sont
+C<ok>, cela signifie soit que les deux programmes
+sont corrects, soit qu'ils sont tous les deux
+erronés.
+S'il y a un résultat
+C<not ok>, cela signifie soit que le programme
+testé est incorrect et le programme de tests est
+correct, soit que le programme testé est correct
+et le programme de tests incorrects, soit que
+les deux programmes sont incorrects, mais de
+manière différente.
+
+En général, pour paraphraser Hoare, le programme de tests est si simple
+que de toute évidence, il ne contient aucun bug.
+Il est donc forcément correct. Donc si tous les
+résultats sont C<ok>, cela signifie que le programme
+testé est correct (à condition que la couverture des
+données par le programme de tests soit suffisante, ce
+qui est un autre problème que je ne traiterai pas ici).
+
+Ce n'est pas le cas avec le programme F<verif-base.el>,
+destiné à tester F<cal-french.el>. En continuant
+à paraphraser Hoare, ce programme,
+basé sur F<DateTime::Calendar::FrenchRevolutionary>,
+"est si compliqué qu'il ne contient aucun bug évident".
+Donc, si un résultat C<not ok> apparaît, il existe une
+probabilité infime que cela provienne d'une erreur dans
+F<cal-french.el> et une probabilité nettement plus importante
+que ce soit mon module  F<DateTime::Calendar::FrenchRevolutionary>
+qui ait tort. J'ai plus confiance dans le programme d'Edward M. Reingold
+et Glenn Morris, avec son auditoire étendu et sa présence
+durable dans Emacs (depuis 1988) que dans mon module, avec
+son auditoire restreint et qui existe seulement depuis 9 ans,
+dont une hibernation de 5 ans.
+
+En revanche, si une erreur est détectée par l'un des autres
+fichiers de tests, c'est une erreur du programme dans le langage
+cible.
+
+Chaque fichier de tests est défini par une liste à deux
+entrées, qui devient une liste à trois entrées le temps
+de l'exécution du programme. La première entrée est le nom
+du fichier en sortie. La troisième entrée est le I<filehandle>
+correspondant à ce fichier. La deuxième entrée est la 
+référence à la routine d'alimentation du fichier de tests.
+Elle est appelée de trois façons différentes :
+
+=over 4
+
+=item *
+
+Avec un seul argument 0, pour l'alimentation initiale du fichier,
+qui vient juste d'être ouvert.
+
+=item *
+
+Avec trois arguments, le numéro du test, l'objet C<DateTime>
+correspondant à la date grégorienne et l'objet 
+C<DateTime::Calendar::FrenchRevolutionary> correspondant
+à la date républicaine équivalente. Le numéro du test commence
+à 1.
+
+=item *
+
+Avec un seul argument -1, pour conclure le fichier de tests,
+qui va être fermé peu après.
+
+=back
+
+Ce programme génère les fichiers suivants :
+
+=over 4
+
+=item F<verif-base.el>
+
+Comme je l'ai expliqué plus haut, ce programme
+semble tester le fichier F<cal-french.el> d' Emacs,
+alors qu'en réalité, il sert à tester mon module 
+F<DateTime::Calendar::FrenchRevolutionary>.
+Il est possible de lancer ce programme depuis
+une ligne de commande sous Unix.
+Pour l'instant, je n'ai pas véfifié comment
+lancer le programme depuis Emacs (bien sûr,
+vous pouvez ouvrir une fenêtre shell dans
+Emacs, mais il doit y avoir une façon plus
+élégante).
+
+=item F<verif-evol.el>
+
+Ce programme teste une extension à F<cal-french.el>,
+dans laquelle les noms de fête sont connus pour
+tous les jours et pas seulement pour les jours
+complémentaires de la fin de l'année.
+comme  F<verif-base.el>, il peut être lancé
+depuis une ligne de commande sous Unix.
+
+=item F<test41>
+
+Ce fichier sert à alimenter un fichier HPWEB
+qui, à son tour, générera des programmes de tests
+pour le programme F<CALFR> sur HP-41.
+Le fichier contient deux blocs de lignes à 
+copier-coller dans le fichier HPWEB.
+
+=back
+
+=head1 CONFIGURATION ET ENVIRONNEMENT
+
+None
+
+Néant.
+
+=head1 DEPENDENCIES / DÉPENDANCES
+
+F<DateTime>
+
+F<DateTime::Calendar::FrenchRevolutionary>
+
+v5.10 : C<say>, I<defined-or>, F<Getopt::Long> (core module)
+
+=head1 INCOMPATIBILITIES / INCOMPATIBILITÉS
+
+No known incompatibilities.
+
+Aucune incompatibilité identifiée.
+
+=head1 BUGS AND LIMITS / BOGUES ET LIMITES
+
+No known bugs.
+
+Aucune erreur identifiée.
+
+=head1 AUTHOR / AUTEUR
+
+Jean Forget, JFORGET (à) cpan.org
+
+=head1 LICENSE AND COPYRIGHT / LICENCE ET COPYRIGHT
+
+(C) Jean Forget, 2012, all rights reserved.
+
+The terms of license for this script are the same as Perl's:
+GNU General Public License (GPL) and Artistic License.
+
+(C) Jean Forget, 2012, tous droits réservés.
+
+Les termes de licence de ce script sont les mêmes termes que pour Perl
+: GNU General Public License (GPL) et Artistic License.
+
+=cut

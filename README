@@ -1,0 +1,31 @@
+This repository contains utility programs (*)
+for the various French Revolutionary programs
+I am interested in. Unless specified otherwise,
+the programs are licensed under the same terms
+as Perl: the GPL license (version 1 or later)
+or the Artistic license.
+
+(*) Only one for the moment.
+
+Installation
+------------
+
+A common prerequisite for all programs is
+that you must install Perl 5.10 or a later 
+version, and the modules F<DateTime> and
+F<DateTime::Calendar::FrenchRevolutionary>.
+If a specific program needs more, it will
+be written in the program's documentation.
+Use C<perlpod> I<program-name> and look
+at the I<DEPENDENCIES> paragraph.
+
+gen-tests
+---------
+
+This program generates a few test files
+for various French Revolutionary calendar
+programs. In some cases, the generated file
+is a ready-to-use program. In other cases,
+the generated files contains lines
+that must be copied-pasted into an external
+source file.

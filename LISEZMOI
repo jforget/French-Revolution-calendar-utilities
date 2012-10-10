@@ -1,0 +1,32 @@
+Ce dépôt contient plusieurs (*) utilitaires
+pour les divers programmes de calendrier
+républicain auxquels je m'intéresse.
+Sauf exception, chaque programme est diffusé
+avec les mêmes termes de licence que Perl :
+la licence GPL version 1 ou ultérieure,
+ou la licence artistique.
+
+(*) Pour l'instant, il n'y en a qu'un seul.
+
+Installation
+------------
+
+Une prérequis commun à tous les programmes est
+l'installation de Perl 5.10 ou plus récent, ainsi
+que des modules F<DateTime> et
+F<DateTime::Calendar::FrenchRevolutionary>.
+Si un programme particulier a besoin d'autre
+chose, cela sera marqué dans sa documentation.
+Utilisez C<perlpod> I<nom-du-programme> 
+et lisez le paragraphe I<DEPENDANCES>.
+
+gen-tests
+---------
+
+Ce programme génère des fichiers de tests pour
+divers programme de calendrier républicain.
+Dans certains cas, le programme généré est
+directement utilisable, dans d'autres cas
+il faut quelques opérations d'édition pour
+copier les lignes générées dans un fichier
+source extérieur.
