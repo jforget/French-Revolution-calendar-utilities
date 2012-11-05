@@ -80,8 +80,12 @@ for (@sortie) {
 sub gen {
   my ($num_test, $aaaammjj) = @_;
   my ($a, $m, $j) = unpack "A4A2A2", $aaaammjj;
+  my $tz = 'Europe/Paris';
+  if ($a > 2100) {
+    $tz = 'UTC';
+  }
   my $dg = DateTime->new(year => $a, month => $m, day => $j,
-             time_zone => 'Europe/Paris', locale => 'fr');
+             time_zone => $tz, locale => 'fr');
   my $dr = DateTime::Calendar::FrenchRevolutionary->from_object(object => $dg);
 
   for (@sortie) {
