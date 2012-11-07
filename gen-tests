@@ -43,6 +43,8 @@ my @sortie = (
         [ 'test41', \&gen41 ],
         [ 'verif-base.el', \&gen_lisp1 ],
         [ 'verif-evol.el', \&gen_lisp2 ],
+        [ 'testcalfr-dmya', sub { gen48(@_, "%d,%m%Y", "%d %b %Y") } ],
+        [ 'testcalfr-mdya', sub { gen48(@_, "%m,%d%Y", "%d %b %Y") } ],
     );
 for (@sortie) {
   open my $f, '>', $_->[0]
@@ -232,6 +234,17 @@ sub lisp_fin {
 (cal-french-check)
 EOF
 }
+
+sub gen48 {
+  my ($numtest, $dg, $dr, $fmtg, $fmtr) = @_;
+  return if $numtest == 0 or $numtest == -1;
+  my $chg = $dg->strftime($fmtg);
+  my $chr = $dr->strftime($fmtr);
+  $chg =~ s/^0/ /;
+  $chr =~ s/^0//;
+  $chr =~ s/ 0+/ /;
+  return qq<\U    { $chg "$chr" }\n>;
+}
 __END__ 
 
 =encoding utf8
@@ -387,6 +400,13 @@ test files for the HP-41 program F<CALFR>.
 The file contains two blocks of lines which
 must be copied-pasted into the HPWEB file.
 
+=item F<testcalfr>I<-xxx>
+
+These files provide a number of lines to
+copy into an HPWEB file which will generate
+test files for the HP-48/HP-50 program F<CALFR>.
+Each file contains a block of lines which
+must be copied-pasted into the HPWEB file.
 
 =back
 
@@ -503,6 +523,14 @@ Ce fichier sert à alimenter un fichier HPWEB
 qui, à son tour, générera des programmes de tests
 pour le programme F<CALFR> sur HP-41.
 Le fichier contient deux blocs de lignes à 
+copier-coller dans le fichier HPWEB.
+
+=item F<testcalfr>I<-xxx>
+
+Ces fichiers servent à alimenter un fichier HPWEB
+qui, à son tour, générera des programmes de tests
+pour le programme F<CALFR> sur HP-48/HP-50.
+Chaque fichier contient un bloc de lignes à 
 copier-coller dans le fichier HPWEB.
 
 =back
