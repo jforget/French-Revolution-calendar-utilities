@@ -43,8 +43,12 @@ my @sortie = (
         [ 'test41', \&gen41 ],
         [ 'verif-base.el', \&gen_lisp1 ],
         [ 'verif-evol.el', \&gen_lisp2 ],
-        [ 'testcalfr-dmya', sub { gen48(@_, "%d%m%Y", "%d %b %Y") } ],
-        [ 'testcalfr-mdya', sub { gen48(@_, "%m%d%Y", "%d %b %Y") } ],
+        [ 'testcalfr-dmya', sub { gen48(@_, "%d%m%Y", "%d %b %Y", 1) } ],
+        [ 'testcalfr-mdya', sub { gen48(@_, "%m%d%Y", "%d %b %Y", 1) } ],
+        [ 'testcalfr-dmys', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY", 0) } ],
+        [ 'testcalfr-mdys', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY", 0) } ],
+        [ 'testcalfr-dmyl', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY %Ej", 0) } ],
+        [ 'testcalfr-mdyl', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY %Ej", 0) } ],
     );
 for (@sortie) {
   open my $f, '>', $_->[0]
@@ -68,7 +72,7 @@ for (qw/ 17920922 17931023 17940727 17941123 17951005
          37910922 37920922 40000101 40010101
          47910923 47920922 50000101 50010101
          57910922 57920921 60000101 60010101 
-         67910922 67920922 77910921 77920921
+         67910922 67920921 77910921 77920921
      /) {
   gen(++$num_test, $_);
 }
@@ -236,14 +240,17 @@ EOF
 }
 
 sub gen48 {
-  my ($numtest, $dg, $dr, $fmtg, $fmtr) = @_;
+  my ($numtest, $dg, $dr, $fmtg, $fmtr, $uc) = @_;
   return if $numtest == 0 or $numtest == -1;
   my $chg = $dg->strftime($fmtg);
   my $chr = $dr->strftime($fmtr);
   $chg =~ s/^0/ /;
   $chr =~ s/^0//;
   $chr =~ s/ 0+/ /;
-  return qq<\U    { $chg "$chr" }\n>;
+  if ($uc) {
+    $chr = uc($chr);
+  }
+  return qq<    { $chg "$chr" }\n>;
 }
 __END__ 
 
