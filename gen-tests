@@ -312,7 +312,7 @@ Usually, to paraphrase Hoare, the testing program
 So the testing program has to be right.
 A C<not ok> program therefore shows that the
 tested program is wrong and a full series
-of C<ok> results shows tha the tested program
+of C<ok> results shows that the tested program
 is right (provided the data coverage provided by
 the testing program is wide enough, but I will not
 deal with this question here).
@@ -326,7 +326,7 @@ So if a C<not ok> result appears, there is a very remote
 chance that  F<cal-french.el> is wrong, and a much
 greater probability that the testing program
 and its module F<DateTime::Calendar::FrenchRevolutionary>
-is wrong. I have more trust in Edward M. Reingold's
+are wrong. I have more trust in Edward M. Reingold's
 and Glenn Morris's program with its large audience
 and its long presence in Emacs (since 1988)
 than in my module, with a small audience
@@ -537,7 +537,7 @@ copier-coller dans le fichier HPWEB.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
-None
+None.
 
 Néant.
 
