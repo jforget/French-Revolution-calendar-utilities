@@ -43,8 +43,8 @@ my @sortie = (
         [ 'test41', \&gen41 ],
         [ 'verif-base.el', \&gen_lisp1 ],
         [ 'verif-evol.el', \&gen_lisp2 ],
-        [ 'testcalfr-dmya', sub { gen48(@_, "%d,%m%Y", "%d %b %Y") } ],
-        [ 'testcalfr-mdya', sub { gen48(@_, "%m,%d%Y", "%d %b %Y") } ],
+        [ 'testcalfr-dmya', sub { gen48(@_, "%d%m%Y", "%d %b %Y") } ],
+        [ 'testcalfr-mdya', sub { gen48(@_, "%m%d%Y", "%d %b %Y") } ],
     );
 for (@sortie) {
   open my $f, '>', $_->[0]
