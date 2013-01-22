@@ -33,6 +33,8 @@ use Getopt::Long;
 use DateTime::Calendar::FrenchRevolutionary;
 
 my $nb41     = 20;
+my $last41   = DateTime->new(year => 4320, month => 9, day => 10, # Last date allowed by the HP-41CX
+             time_zone => 'UTC', locale => 'fr');
 
 Getopt::Long::GetOptions('nb41:i'  => \$nb41,
     ) or die "Problème avec les options";
@@ -70,6 +72,7 @@ for (qw/ 17920922 17931023 17940727 17941123 17951005
          21920922 21930921 21990922 22000922
          27910923 27920922 30000101 30010101
          37910922 37920922 40000101 40010101
+         43200910
          47910923 47920922 50000101 50010101
          57910922 57920921 60000101 60010101 
          67910922 67920921 77910921 77920921
@@ -107,6 +110,11 @@ sub gen41 {
 
   return ''
       if $num_test == 0;
+
+  # The HP-41CX cannot deal with dates beyond 10th September 4320
+  # La HP-41CX ne sait pas traiter les dates au-delà du 10 septembre 4320
+  return ''
+      if $num_test > 0 && $dg > $last41;
 
   my $res = '';
   if ($num_test != -1) {
