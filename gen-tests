@@ -139,11 +139,7 @@ EOF
   }
   if (($num_test == -1 && $must_close) || $num_test % $nb41 == 0) {
     $res .= <<"EOF";
-    stop
-    gto 00
-    rtn
-    |check|
-    end
+    |end|
 EOF
     $must_close = 0;
   }
