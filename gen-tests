@@ -456,12 +456,12 @@ of the year.
 Like  F<verif-base.el>, it can be run from
 a Unix command-line.
 
-=item F<test41>
+=item F<test41dmy> and F<test41mdy>
 
-This file provides a number of lines to
+These files provide a number of lines to
 copy into an HPWEB file which will generate
 test files for the HP-41 program F<CALFR>.
-The file contains two blocks of lines which
+The files contain two blocks of lines which
 must be copied-pasted into the HPWEB file.
 
 =item F<testcalfr>I<-xxx>
@@ -581,12 +581,12 @@ complémentaires de la fin de l'année.
 comme  F<verif-base.el>, il peut être lancé
 depuis une ligne de commande sous Unix.
 
-=item F<test41>
+=item F<test41dmy> et F<test41mdy>
 
-Ce fichier sert à alimenter un fichier HPWEB
+Ces fichier servent à alimenter un fichier HPWEB
 qui, à son tour, générera des programmes de tests
 pour le programme F<CALFR> sur HP-41.
-Le fichier contient deux blocs de lignes à 
+Les fichiers contiennent deux blocs de lignes à 
 copier-coller dans le fichier HPWEB.
 
 =item F<testcalfr>I<-xxx>
