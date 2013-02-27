@@ -42,7 +42,8 @@ Getopt::Long::GetOptions('nb41:i'  => \$nb41,
 my $num_test =  0;
 
 my @sortie = (
-        [ 'test41', \&gen41 ],
+        [ 'test41dmy', \&gen41dmy ],
+        [ 'test41mdy', \&gen41mdy ],
         [ 'verif-base.el', \&gen_lisp1 ],
         [ 'verif-evol.el', \&gen_lisp2 ],
         [ 'testcalfr-dmya', sub { gen48(@_, "%d%m%Y", "%d %b %Y", 1) } ],
@@ -103,7 +104,7 @@ sub gen {
   }
 }
 
-sub gen41 {
+sub gen41dmy {
   my ($num_test, $dg, $dr) = @_;
   state $num_fic    = 0; # The first time I use a state variable since v5.10 is out!
   state $must_close = 0;
@@ -121,8 +122,8 @@ sub gen41 {
     if ($num_test % $nb41 == 1) {
       $num_fic = 1 + int($num_test / $nb41);
       $res = <<"EOF";
-- section: testcf$num_fic
-  testcf$num_fic.txt: 1
+- section: testcf${num_fic}dmy
+  testcf${num_fic}dmy.txt: 1
 - code: |
     lbl "TESTCF$num_fic"
     lbl 00
@@ -130,12 +131,12 @@ sub gen41 {
 EOF
       $must_close = 1;
     }
-    $res .= '    ' . $dg->strftime("%d.%m%Y\n");
-    my $ch = uc($dr->strftime('              "%d %b %Y"%n'));
+    $res .= '    ' . $dg->strftime("%d.%m%Y");
+    my $ch = uc($dr->strftime('"%d %b %Y"'));
     $ch =~ s/"0/"/;
     $ch =~ s/ 0*/ /g;
     $res .= '    ' . $ch;
-    $res .= ' ' x 30 . "xeq 01\n";
+    $res .= "  xeq 01\n";
   }
   if (($num_test == -1 && $must_close) || $num_test % $nb41 == 0) {
     $res .= <<"EOF";
@@ -147,7 +148,59 @@ EOF
   if ($num_test == -1) {
     $res .= "**** ci-dessous, copier-coller au début du fichier destination ****\n";
     for (1 .. $num_fic) {
-      $res .= "testcf$_.txt: code41\n";
+      $res .= "testcf${_}dmy.txt: code41\n";
+    }
+
+  }
+  return $res;
+}
+
+
+sub gen41mdy {
+  my ($num_test, $dg, $dr) = @_;
+  state $num_fic    = 0; # The first time I use a state variable since v5.10 is out!
+  state $must_close = 0;
+
+  return ''
+      if $num_test == 0;
+
+  # The HP-41CX cannot deal with dates beyond 10th September 4320
+  # La HP-41CX ne sait pas traiter les dates au-delà du 10 septembre 4320
+  return ''
+      if $num_test > 0 && $dg > $last41;
+
+  my $res = '';
+  if ($num_test != -1) {
+    if ($num_test % $nb41 == 1) {
+      $num_fic = 1 + int($num_test / $nb41);
+      $res = <<"EOF";
+- section: testcf${num_fic}mdy
+  testcf${num_fic}mdy.txt: 1
+- code: |
+    lbl "TESTCF$num_fic"
+    lbl 00
+    cf 00
+EOF
+      $must_close = 1;
+    }
+    $res .= '    ' . $dg->strftime("%m.%d%Y");
+    my $ch = uc($dr->strftime('"%d %b %Y"'));
+    $ch =~ s/"0/"/;
+    $ch =~ s/ 0*/ /g;
+    $res .= '    ' . $ch;
+    $res .= "  xeq 01\n";
+  }
+  if (($num_test == -1 && $must_close) || $num_test % $nb41 == 0) {
+    $res .= <<"EOF";
+    |end|
+EOF
+    $must_close = 0;
+  }
+
+  if ($num_test == -1) {
+    $res .= "**** ci-dessous, copier-coller au début du fichier destination ****\n";
+    for (1 .. $num_fic) {
+      $res .= "testcf${_}mdy.txt: code41\n";
     }
 
   }
