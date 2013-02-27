@@ -3,7 +3,7 @@
 # Generating tests files for various programs dealing with the French Revolutionary calendar
 # Génération des fichiers de test pour divers programmes de calendrier républicain
 #
-# Copyright (C) 2012, Jean Forget
+# Copyright (C) 2012, 2013, Jean Forget
 #
 # Author: Jean Forget
 # Maintainer: Jean Forget
@@ -73,7 +73,7 @@ for (qw/ 17920922 17931023 17940727 17941123 17951005
          21920922 21930921 21990922 22000922
          27910923 27920922 30000101 30010101
          37910922 37920922 40000101 40010101
-         43200910
+         43200910 43200911
          47910923 47920922 50000101 50010101
          57910922 57920921 60000101 60010101 
          67910922 67920921 77910921 77920921
@@ -108,19 +108,15 @@ sub gen41dmy {
   my ($num_test, $dg, $dr) = @_;
   state $num_fic    = 0; # The first time I use a state variable since v5.10 is out!
   state $must_close = 0;
+  state $num_ref    = 0; # The test number before the file was opened
 
   return ''
       if $num_test == 0;
 
-  # The HP-41CX cannot deal with dates beyond 10th September 4320
-  # La HP-41CX ne sait pas traiter les dates au-delà du 10 septembre 4320
-  return ''
-      if $num_test > 0 && $dg > $last41;
-
   my $res = '';
   if ($num_test != -1) {
-    if ($num_test % $nb41 == 1) {
-      $num_fic = 1 + int($num_test / $nb41);
+    if ($num_test - $num_ref == 1) {
+      ++$num_fic;
       $res = <<"EOF";
 - section: testcf${num_fic}dmy
   testcf${num_fic}dmy.txt: 1
@@ -133,16 +129,16 @@ EOF
     }
     $res .= '    ' . $dg->strftime("%d.%m%Y");
     my $ch = uc($dr->strftime('"%d %b %Y"'));
-    $ch =~ s/"0/"/;
+    $ch =~ s/"0/ "/;
     $ch =~ s/ 0*/ /g;
-    $res .= '    ' . $ch;
-    $res .= "  xeq 01\n";
+    $res .= sprintf("  %-13s   xeq01\n", $ch);
   }
-  if (($num_test == -1 && $must_close) || $num_test % $nb41 == 0) {
+  if (($num_test == -1 && $must_close) || $num_test - $num_ref ==  $nb41 || $dg == $last41) {
     $res .= <<"EOF";
     |end|
 EOF
     $must_close = 0;
+    $num_ref = $num_test;
   }
 
   if ($num_test == -1) {
@@ -160,19 +156,15 @@ sub gen41mdy {
   my ($num_test, $dg, $dr) = @_;
   state $num_fic    = 0; # The first time I use a state variable since v5.10 is out!
   state $must_close = 0;
+  state $num_ref    = 0; # The test number before the file was opened
 
   return ''
       if $num_test == 0;
 
-  # The HP-41CX cannot deal with dates beyond 10th September 4320
-  # La HP-41CX ne sait pas traiter les dates au-delà du 10 septembre 4320
-  return ''
-      if $num_test > 0 && $dg > $last41;
-
   my $res = '';
   if ($num_test != -1) {
-    if ($num_test % $nb41 == 1) {
-      $num_fic = 1 + int($num_test / $nb41);
+    if ($num_test - $num_ref == 1) {
+      ++$num_fic;
       $res = <<"EOF";
 - section: testcf${num_fic}mdy
   testcf${num_fic}mdy.txt: 1
@@ -185,16 +177,16 @@ EOF
     }
     $res .= '    ' . $dg->strftime("%m.%d%Y");
     my $ch = uc($dr->strftime('"%d %b %Y"'));
-    $ch =~ s/"0/"/;
+    $ch =~ s/"0/ "/;
     $ch =~ s/ 0*/ /g;
-    $res .= '    ' . $ch;
-    $res .= "  xeq 01\n";
+    $res .= sprintf("  %-13s   xeq01\n", $ch);
   }
-  if (($num_test == -1 && $must_close) || $num_test % $nb41 == 0) {
+  if (($num_test == -1 && $must_close) || $num_test - $num_ref == $nb41 || $dg == $last41) {
     $res .= <<"EOF";
     |end|
 EOF
     $must_close = 0;
+    $num_ref = $num_test;
   }
 
   if ($num_test == -1) {
@@ -561,7 +553,7 @@ Ce programme génère les fichiers suivants :
 =item F<verif-base.el>
 
 Comme je l'ai expliqué plus haut, ce programme
-semble tester le fichier F<cal-french.el> d' Emacs,
+semble tester le fichier F<cal-french.el> d'Emacs,
 alors qu'en réalité, il sert à tester mon module 
 F<DateTime::Calendar::FrenchRevolutionary>.
 Il est possible de lancer ce programme depuis
