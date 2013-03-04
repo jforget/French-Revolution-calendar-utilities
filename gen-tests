@@ -127,7 +127,7 @@ sub gen41dmy {
 EOF
       $must_close = 1;
     }
-    my $dg1 = $dg->strftime("%m.%d%Y");
+    my $dg1 = $dg->strftime("%d.%m%Y");
     $dg1 =~ s/^0/ /;
     my $ch = uc($dr->strftime('"%d %b %Y"'));
     $ch =~ s/"0/ "/;
