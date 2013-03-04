@@ -132,7 +132,7 @@ EOF
     my $ch = uc($dr->strftime('"%d %b %Y"'));
     $ch =~ s/"0/ "/;
     $ch =~ s/ 0*/ /g;
-    $res .= sprintf("%9s  %-13s   xeq 01\n", $dg1, $ch);
+    $res .= sprintf("    %9s  %-13s   xeq 01\n", $dg1, $ch);
   }
   if (($num_test == -1 && $must_close) || $num_test - $num_ref ==  $nb41 || $dg == $last41) {
     $res .= <<"EOF";
@@ -181,7 +181,7 @@ EOF
     my $ch = uc($dr->strftime('"%d %b %Y"'));
     $ch =~ s/"0/ "/;
     $ch =~ s/ 0*/ /g;
-    $res .= sprintf("%9s  %-13s   xeq 01\n", $dg1, $ch);
+    $res .= sprintf("    %9s  %-13s   xeq 01\n", $dg1, $ch);
   }
   if (($num_test == -1 && $must_close) || $num_test - $num_ref == $nb41 || $dg == $last41) {
     $res .= <<"EOF";
