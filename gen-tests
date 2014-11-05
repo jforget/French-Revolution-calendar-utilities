@@ -42,10 +42,10 @@ my $num_test =  0;
 my @sortie = (
         [ 'test41dmy', \&gen41dmy ],
         [ 'test41mdy', \&gen41mdy ],
-        [ 'verif-v0.el', sub { gen_lisp(@_, '"%d %B an %Y de la Révolution"', '"%EJ de l\'Année %Y de la Révolution"') } ],
-        [ 'verif-v1.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution"', '"%EJ de l\'Année %Y de la Révolution"') } ],
-        [ 'verif-v2.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution"', '"%A %d %B an %Y de la Révolution"') } ],
-        [ 'verif-v3.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution, %Ej"', '"%A %d %B an %Y de la Révolution, %Ej"') } ],
+        [ 'verif-v0.el', sub { gen_lisp(@_, '"%d %B an %Y de la Révolution"', '"%EJ de l\'Année %Y de la Révolution"', 0) } ],
+        [ 'verif-v1.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution"', '"%EJ de l\'Année %Y de la Révolution"', 0) } ],
+        [ 'verif-v2.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution"', '"%A %d %B an %Y de la Révolution, %EJ"', 1) } ],
+        [ 'verif-v3.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution, %EJ"', '"%A %d %B an %Y de la Révolution, %EJ"', 1) } ],
         [ 'testcalfr-dmya', sub { gen48(@_, "%d%m%Y", "%d %b %Y", 1) } ],
         [ 'testcalfr-mdya', sub { gen48(@_, "%m%d%Y", "%d %b %Y", 1) } ],
         [ 'testcalfr-dmys', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY", 0) } ],
@@ -202,7 +202,7 @@ EOF
 }
 
 sub gen_lisp {
-  my ($num_test, $dg, $dr, $frm_n, $frm_13) = @_;
+  my ($num_test, $dg, $dr, $frm_n, $frm_13, $lowcase) = @_;
 
   if ($num_test == 0) {
     return lisp_debut();
@@ -219,6 +219,9 @@ sub gen_lisp {
   $j = " $j" if $j < 10;
   if ($dr->month != 13) {
     $ch = $dr->strftime($frm_n);
+    if ($lowcase) {
+      $ch =~ s/, Jour/, jour/;
+    }
     $ch = "    (cal-french-check-unit '($a $m $j) $ch)\n";
     $ch =~ s/"0/"/;
     $ch =~ s/ 0*/ /g;
@@ -226,6 +229,9 @@ sub gen_lisp {
   }
   else {
     $ch = $dr->strftime($frm_13);
+    if ($lowcase) {
+      $ch =~ s/, Jour/, jour/;
+    }
     $ch = "    (cal-french-check-unit '($a $m $j) $ch)\n";
     $ch =~ s/"0/"/;
     $ch =~ s/ 0*/ /g;
