@@ -438,7 +438,7 @@ The program produces the following files:
 
 =over 4
 
-=item F<verif-base.el>
+=item F<verif-v0.el>
 
 As explained above, this program seems to check
 Emacs' F<cal-french.el>, although the real result
@@ -449,13 +449,13 @@ I have not checked yet how to run it from within Emacs
 (of course, you can open a shell window inside Emacs,
 but there is surely a better way).
 
-=item F<verif-evol.el>
+=item F<verif-v1.el>, F<verif-v2.el>, F<verif-v3.el>
 
-This program checks an extended F<cal-french.el>,
+These programs check an extended F<cal-french.el>,
 where the feasts are available for all the days, 
 not only for the additional days at the end
 of the year.
-Like  F<verif-base.el>, it can be run from
+Like  F<verif-v0.el>, they can be run from
 a Unix command-line.
 
 =item F<test41dmy> and F<test41mdy>
@@ -560,7 +560,7 @@ Ce programme génère les fichiers suivants :
 
 =over 4
 
-=item F<verif-base.el>
+=item F<verif-v0.el>
 
 Comme je l'ai expliqué plus haut, ce programme
 semble tester le fichier F<cal-french.el> d'Emacs,
@@ -574,13 +574,13 @@ vous pouvez ouvrir une fenêtre shell dans
 Emacs, mais il doit y avoir une façon plus
 élégante).
 
-=item F<verif-evol.el>
+=item F<verif-v1.el>, F<verif-v2.el> et F<verif-v1.el>
 
-Ce programme teste une extension à F<cal-french.el>,
+Ces programmes testent une extension à F<cal-french.el>,
 dans laquelle les noms de fête sont connus pour
 tous les jours et pas seulement pour les jours
 complémentaires de la fin de l'année.
-comme  F<verif-base.el>, il peut être lancé
+comme  F<verif-v0.el>, ils peuvent être lancés
 depuis une ligne de commande sous Unix.
 
 =item F<test41dmy> et F<test41mdy>
@@ -633,12 +633,12 @@ Jean Forget, JFORGET (à) cpan.org
 
 =head1 LICENSE AND COPYRIGHT / LICENCE ET COPYRIGHT
 
-(C) Jean Forget, 2012, all rights reserved.
+(C) Jean Forget, 2012, 2013, 2014, all rights reserved.
 
 The terms of license for this script are the same as Perl's:
 GNU General Public License (GPL) and Artistic License.
 
-(C) Jean Forget, 2012, tous droits réservés.
+(C) Jean Forget, 2012, 2013, 2014, tous droits réservés.
 
 Les termes de licence de ce script sont les mêmes termes que pour Perl
 : GNU General Public License (GPL) et Artistic License.
