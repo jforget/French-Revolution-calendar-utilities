@@ -385,7 +385,7 @@ deal with this question here).
 
 This is not so with the program testing F<cal-french.el>.
 To continue paraphrasing Hoare, this testing program,
-F<verif-base.el>,
+F<verif-v0.el>,
 based on F<DateTime::Calendar::FrenchRevolutionary>,
 "is so complicated that there is no obvious bug".
 So if a C<not ok> result appears, there is a very remote
@@ -507,7 +507,7 @@ testé est correct (à condition que la couverture des
 données par le programme de tests soit suffisante, ce
 qui est un autre problème que je ne traiterai pas ici).
 
-Ce n'est pas le cas avec le programme F<verif-base.el>,
+Ce n'est pas le cas avec le programme F<verif-v0.el>,
 destiné à tester F<cal-french.el>. En continuant
 à paraphraser Hoare, ce programme,
 basé sur F<DateTime::Calendar::FrenchRevolutionary>,
