@@ -60,12 +60,11 @@ $feast_single[-3] = q("de la Raison");
 push @feast_multi,  ('') x 4; # to get a multiple of 5
 push @feast_single, ('') x 4; # to get a multiple of 5
 
-
-my $format = sprintf("%%-%ds ", $max_multi) x 4 . " %s\n";
-retrieve(@feast_multi);
-
-$format = sprintf("%%-%ds ", $max_single) x 4 . " %s\n";
+my $format = sprintf("%%-%ds ", $max_single) x 4 . " %s\n";
 retrieve(@feast_single);
+
+$format = sprintf("%%-%ds ", $max_multi) x 4 . " %s\n";
+retrieve(@feast_multi);
 
 sub store_month {
   my ($month) = @_;
