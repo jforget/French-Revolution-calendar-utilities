@@ -1,12 +1,10 @@
-Ce dépôt contient plusieurs (*) utilitaires
+Ce dépôt contient plusieurs utilitaires
 pour les divers programmes de calendrier
 républicain auxquels je m'intéresse.
 Sauf exception, chaque programme est diffusé
 avec les mêmes termes de licence que Perl :
 la licence GPL version 1 ou ultérieure,
 ou la licence artistique.
-
-(*) Pour l'instant, il n'y en a qu'un seul.
 
 Installation
 ------------
@@ -30,3 +28,10 @@ directement utilisable, dans d'autres cas
 il faut quelques opérations d'édition pour
 copier les lignes générées dans un fichier
 source extérieur.
+
+gen-lisp
+--------
+
+Ce programme génère la liste des fêtes du
+calendrier républicain, pour l'inclure dans le
+programme cal-french.el d'Emacs.

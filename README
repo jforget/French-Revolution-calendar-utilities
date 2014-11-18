@@ -1,11 +1,9 @@
-This repository contains utility programs (*)
+This repository contains utility programs
 for the various French Revolutionary programs
 I am interested in. Unless specified otherwise,
 the programs are licensed under the same terms
 as Perl: the GPL license (version 1 or later)
 or the Artistic license.
-
-(*) Only one for the moment.
 
 Installation
 ------------
@@ -29,3 +27,10 @@ is a ready-to-use program. In other cases,
 the generated files contains lines
 that must be copied-pasted into an external
 source file.
+
+gen-lisp
+--------
+
+This program generates the list of feasts in
+the French Revolutionary calendar, for
+inclusion in Emacs' cal-french.el program.
