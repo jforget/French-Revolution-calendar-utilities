@@ -24,6 +24,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNU Emacs; see the file COPYING. If not, see <http://www.gnu.org/licenses/>.
 
+use utf8;
 use v5.10;
 use strict;
 use warnings;
@@ -40,24 +41,28 @@ Getopt::Long::GetOptions('nb41:i'  => \$nb41,
 my $num_test =  0;
 
 my @sortie = (
-        [ 'test41dmy', \&gen41dmy ],
-        [ 'test41mdy', \&gen41mdy ],
-        [ 'verif-v0.el', sub { gen_lisp(@_, '"%d %B an %Y de la Révolution"', '"%EJ de l\'Année %Y de la Révolution"', 0) } ],
-        [ 'verif-v1.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution"', '"%EJ de l\'Année %Y de la Révolution"', 0) } ],
-        [ 'verif-v2.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution"', '"%A %d %B an %Y de la Révolution, %EJ"', 1) } ],
-        [ 'verif-v3.el', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution, %EJ"', '"%A %d %B an %Y de la Révolution, %EJ"', 1) } ],
-        [ 'testcalfr-dmya', sub { gen48(@_, "%d%m%Y", "%d %b %Y", 1) } ],
-        [ 'testcalfr-mdya', sub { gen48(@_, "%m%d%Y", "%d %b %Y", 1) } ],
-        [ 'testcalfr-dmys', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY", 0) } ],
-        [ 'testcalfr-mdys', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY", 0) } ],
-        [ 'testcalfr-dmyl', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY %Ej", 0) } ],
-        [ 'testcalfr-mdyl', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY %Ej", 0) } ],
+        [ 'test41dmy',      'I', \&gen41dmy ],
+        [ 'test41mdy',      'I', \&gen41mdy ],
+        [ 'verif-v0.el',    'U', sub { gen_lisp(@_, '"%d %B an %Y de la Révolution"', '"%EJ de l\'Année %Y de la Révolution"', 0) } ],
+        [ 'verif-v1.el',    'U', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution"', '"%EJ de l\'Année %Y de la Révolution"', 0) } ],
+        [ 'verif-v2.el',    'U', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution"', '"%A %d %B an %Y de la Révolution, %EJ"', 1) } ],
+        [ 'verif-v3.el',    'U', sub { gen_lisp(@_, '"%A %d %B an %Y de la Révolution, %EJ"', '"%A %d %B an %Y de la Révolution, %EJ"', 1) } ],
+        [ 'testcalfr-dmya', 'I', sub { gen48(@_, "%d%m%Y", "%d %b %Y", 1) } ],
+        [ 'testcalfr-mdya', 'I', sub { gen48(@_, "%m%d%Y", "%d %b %Y", 1) } ],
+        [ 'testcalfr-dmys', 'I', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY", 0) } ],
+        [ 'testcalfr-mdys', 'I', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY", 0) } ],
+        [ 'testcalfr-dmyl', 'I', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY %Ej", 0) } ],
+        [ 'testcalfr-mdyl', 'I', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY %Ej", 0) } ],
     );
 for (@sortie) {
   open my $f, '>', $_->[0]
     or die "ouverture $_->[0] : $!";
+  given ($_->[1]) {
+    when ('I') { binmode $f, ':encoding(ISO-8859-1)'; }
+    when ('U') { binmode $f, ':encoding(UTF-8)'; }
+  }
   push @$_, $f;
-  my $s = $_->[1];
+  my $s = $_->[2];
   print $f $s->(0);
 }
 for (qw/ 17920922 17931023 17940727 17941123 17951005
@@ -81,7 +86,7 @@ for (qw/ 17920922 17931023 17940727 17941123 17951005
   gen(++$num_test, $_);
 }
 for (@sortie) {
-  my ($nom, $sub, $fh) = @$_;
+  my ($nom, $enc, $sub, $fh) = @$_;
   print $fh $sub->(-1);
   close $fh
     or die "fermeture $nom : $!";
@@ -99,7 +104,7 @@ sub gen {
   my $dr = DateTime::Calendar::FrenchRevolutionary->from_object(object => $dg);
 
   for (@sortie) {
-    my ($nom, $sub, $fh) = @$_;
+    my ($nom, $enc, $sub, $fh) = @$_;
     print $fh $sub->($num_test, $dg, $dr);
   }
 }
