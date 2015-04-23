@@ -322,7 +322,7 @@ sub genapl {
   my ($num_test, $dg, $dr) = @_;
   return "V ← ⍳0\n" if $num_test == 0;
   return if $num_test == -1;
-  my @rd = $dg->utc_rd_values;
+  my @rd = $dg->local_rd_values;
   return sprintf("V ← V, %4d %2d %2d %4d %2d %2d %7d\n", $dg->year, $dg->month, $dg->day,
                                                           $dr->year, $dr->month, $dr->day, $rd[0]);
 
