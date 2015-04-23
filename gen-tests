@@ -53,6 +53,7 @@ my @sortie = (
         [ 'testcalfr-mdys', 'I', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY", 0) } ],
         [ 'testcalfr-dmyl', 'I', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY %Ej", 0) } ],
         [ 'testcalfr-mdyl', 'I', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY %Ej", 0) } ],
+        [ 'testapl',        'U', \&genapl ],
     );
 for (@sortie) {
   open my $f, '>', $_->[0]
@@ -316,6 +317,16 @@ sub gen48 {
   }
   return qq<    { $chg "$chr" }\n>;
 }
+
+sub genapl {
+  my ($num_test, $dg, $dr) = @_;
+  return "V ← ⍳0\n" if $num_test == 0;
+  return if $num_test == -1;
+  my @rd = $dg->utc_rd_values;
+  return sprintf("V ← V, %4d %2d %2d %4d %2d %2d %7d\n", $dg->year, $dg->month, $dg->day,
+                                                          $dr->year, $dr->month, $dr->day, $rd[0]);
+
+}
 __END__ 
 
 =encoding utf8
@@ -479,6 +490,12 @@ test files for the HP-48/HP-50 program F<CALFR>.
 Each file contains a block of lines which
 must be copied-pasted into the HPWEB file.
 
+=item F<testapl>
+
+A chunk of APL code to initialise a vector containing test data:
+the gregorian date in YYYY MM DD format, the French Revolutionary date
+in the same format and the Rata Die day value.
+
 =back
 
 =head1 DESCRIPTION (FRANCAIS)
@@ -603,6 +620,14 @@ qui, à son tour, générera des programmes de tests
 pour le programme F<CALFR> sur HP-48/HP-50.
 Chaque fichier contient un bloc de lignes à 
 copier-coller dans le fichier HPWEB.
+
+=item F<testapl>
+
+Ce fichier contient un morceau de code APL, destiné à 
+initialiser une variable avec les données de tests.
+Ces données sont des groupes de 7 nombres : la date
+grégorienne au format AAAA MM JJ, la date républicaine
+correspondant au même format et la valeur Rata Die.
 
 =back
 
