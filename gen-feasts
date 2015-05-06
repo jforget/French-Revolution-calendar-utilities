@@ -141,7 +141,9 @@ sub retrieve {
       if ($delta > 0) {
         substr($c1, -1, 0) = ' ' x ($delta);
       }
-      $c1 =~ s/"/'/g;
+      $c1 =~ s/'/''/g; # inner single quotes (string characters) are doubled
+      $c1 =~ s/"/'/g;  # outer quotes (string delimiters) are single quotes too
+      # ... we rely on the fact there are no inner double quotes
       printf($format, $c1);
     }
   }
