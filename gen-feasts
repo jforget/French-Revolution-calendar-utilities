@@ -85,6 +85,7 @@ given ($lang) {
     say "V ← ''";
     $format = "V ← V, %s\n";
     retrieve($format, @feast_multi);
+    $max_multi -= 2; # because the quotes delimiters were included in the string length
     say "R ← 366 $max_multi ⍴ V";
   }
 }
