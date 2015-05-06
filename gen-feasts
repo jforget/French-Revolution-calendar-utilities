@@ -1,9 +1,9 @@
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
-# Generating the list of feasts for cal-french.el from Emacs
-# Génération de la liste des fêtes pour cal-french.el d'Emacs
+# Generating the list of feasts for cal-french.el from Emacs and other similar programs
+# Génération de la liste des fêtes pour cal-french.el d'Emacs et pour d'autres programmes similaires
 #
-# Copyright (C) 2014, Jean Forget
+# Copyright (C) 2014, 2015, Jean Forget
 #
 # Author: Jean Forget
 # Maintainer: Jean Forget
@@ -31,6 +31,15 @@ use warnings;
 use Getopt::Long;
 use DateTime::Calendar::FrenchRevolutionary;
 
+my $lang = 'lisp';
+
+Getopt::Long::GetOptions('lang:s'  => \$lang,
+    ) or die "Problème avec les options";
+$lang = lc($lang);
+if ($lang ne 'lisp' && $lang ne 'apl') {
+  die "Unknown language: '$lang'";
+}
+
 my @feast_multi;
 my @feast_single;
 my $max_multi  = 0;
@@ -55,21 +64,40 @@ store_month(13);
 for my $day (1..6) {
   store_day(13, $day);
 }
-$feast_multi [-3] = q("de la Raison");
-$feast_single[-3] = q("de la Raison");
-push @feast_multi,  ('') x 4; # to get a multiple of 5
-push @feast_single, ('') x 4; # to get a multiple of 5
+if ($lang eq 'lisp') {
+  # Some disagreement between cal-french.el and DateTime::Calendar::FrenchRevolutionary
+  $feast_multi [-3] = q("de la Raison");
+  $feast_single[-3] = q("de la Raison");
+  push @feast_multi,  ('') x 4; # to get a multiple of 5
+  push @feast_single, ('') x 4; # to get a multiple of 5
+}
 
-my $format = sprintf("%%-%ds ", $max_single) x 4 . " %s\n";
-retrieve(@feast_single);
+my $format;
+given ($lang) {
+  when ('lisp') {
+    $format = sprintf("%%-%ds ", $max_single) x 4 . " %s\n";
+    retrieve($format, @feast_single);
 
-$format = sprintf("%%-%ds ", $max_multi) x 4 . " %s\n";
-retrieve(@feast_multi);
+    $format = sprintf("%%-%ds ", $max_multi) x 4 . " %s\n";
+    retrieve($format, @feast_multi);
+  }
+  when ('apl') {
+    say "V ← ''";
+    $format = "V ← V, %s\n";
+    retrieve($format, @feast_multi);
+    say "R ← 366 $max_multi ⍴ V";
+  }
+}
 
 sub store_month {
   my ($month) = @_;
   my $date = DateTime::Calendar::FrenchRevolutionary->new(year => 220, month => $month, day => 1, locale => 'fr');
-  my $comment = $date->strftime(";; %B");
+  my $marker;
+  given ($lang) {
+    when ("lisp") { $marker = ";;"; }
+    when ("apl" ) { $marker = "⍝"; }
+  }
+  my $comment = $date->strftime("$marker %B");
   push @feast_multi,  $comment;
   push @feast_single, $comment;
 }
@@ -90,18 +118,31 @@ sub store_day {
   push @feast_single, $feast;
 }
 sub retrieve {
-  my @list = @_;
+  my ($format, @list) = @_;
   while (@list) {
+    my $marker;
+    given ($lang) {
+      when ("lisp") { $marker = ";"; }
+      when ("apl" ) { $marker = "⍝"; }
+    }
     my $c1 = shift @list;
-    if (substr($c1, 0, 1) eq ";") {
+    if (substr($c1, 0, 1) eq $marker) {
       say $c1
     }
-    else {
+    elsif ($lang eq 'lisp') {
       my $c2 = shift @list;
       my $c3 = shift @list;
       my $c4 = shift @list;
       my $c5 = shift @list;
       printf($format, $c1, $c2, $c3, $c4, $c5);
+    }
+    elsif ($lang eq 'apl') {
+      my $delta = $max_multi - length($c1);
+      if ($delta > 0) {
+        substr($c1, -1, 0) = ' ' x ($delta);
+      }
+      $c1 =~ s/"/'/g;
+      printf($format, $c1);
     }
   }
 }
@@ -111,29 +152,36 @@ __END__
 
 =head1 NAME / NOM
 
-gen-tests -- a program to generate the list of feasts for F<cal-french.el>
+gen-feasts -- a program to generate the list of feasts for F<cal-french.el>
 
-gen-tests -- un programme pour générer la liste des fêtes pour F<cal-french.el>
+gen-feasts -- un programme pour générer la liste des fêtes pour F<cal-french.el>
 
 =head1 UTILISATION
 
-gen-lisp
+gen-feasts --lang=lisp
+gen-feasts --lang=apl
 
 =head1 CALL PARAMETERS / PARAMÈTRES D'APPEL
 
-None.
+=over 4
 
-Aucun.
+=item lang
+
+Target language. For the moment, the only accepted languages are Lisp and APL.
+
+Langage de destination. Pour l'instant, seuls Lisp et APL sont acceptés.
+
+=back
 
 =head1 DESCRIPTION (ENGLISH)
 
 This program generates the list  of feasts in the French Revolutionary
-calendar, for inclusion in a Lisp program.
+calendar, for inclusion in a Lisp or APL program.
 
 =head1 DESCRIPTION (FRANCAIS)
 
 Ce programme génère la liste des fêtes du calendrier républicain, pour
-l'inclure dans un programme Lisp.
+l'inclure dans un programme Lisp ou APL.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
@@ -183,12 +231,12 @@ Jean Forget, JFORGET (à) cpan.org
 
 =head1 LICENSE AND COPYRIGHT / LICENCE ET COPYRIGHT
 
-(C) Jean Forget, 2014, all rights reserved.
+(C) Jean Forget, 2014, 2015, all rights reserved.
 
 The  terms of  license for  this script  are the  same as  Perl's: GNU
 General Public License (GPL) and Artistic License.
 
-(C) Jean Forget, 2014, tous droits réservés.
+(C) Jean Forget, 2014, 2015, tous droits réservés.
 
 Les termes  de licence  de ce  script sont les  mêmes termes  que pour
 S<Perl :> GNU General Public License (GPL) et Artistic License.
