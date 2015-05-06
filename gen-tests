@@ -54,6 +54,7 @@ my @sortie = (
         [ 'testcalfr-dmyl', 'I', sub { gen48(@_, "%d%m%Y", "%A %d %B %EY %Ej", 0) } ],
         [ 'testcalfr-mdyl', 'I', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY %Ej", 0) } ],
         [ 'testapl',        'U', \&genapl ],
+        [ 'testapl1',       'U', \&genapl1 ],
     );
 for (@sortie) {
   open my $f, '>', $_->[0]
@@ -327,6 +328,31 @@ sub genapl {
                                                           $dr->year, $dr->month, $dr->day, $rd[0]);
 
 }
+
+sub genapl1 {
+  my ($num_test, $dg, $dr) = @_;
+  state @results;
+  state $max_len = 0;
+  if ($num_test > 0) {
+    my $result = $dr->strftime("%A %d %B %EY, %EJ");
+    # minor differences between DT::C::FR and apl: lower case "jour" and no leading zero
+    $result =~ s/Jour/jour/;
+    $result =~ s/complémentaire/compl./;
+    $result =~ s/ 0/ /;
+    push @results, $result;
+    $max_len = length($result)
+      if $max_len < length($result)
+  }
+  if ($num_test == -1) {
+    for my $result (@results) {
+      my $len = length($result);
+      $result =~ s/'/''/g;
+      $result = "V ← V, '" . $result . (' ' x ($max_len - $len)) . "'";
+    }
+    my $nb = @results;
+    return join "\n", @results, "R ← $nb $max_len ⍴ V";
+  }
+}
 __END__ 
 
 =encoding utf8
@@ -496,6 +522,11 @@ A chunk of APL code to initialise a vector containing test data:
 the gregorian date in YYYY MM DD format, the French Revolutionary date
 in the same format and the Rata Die day value.
 
+=item F<testapl1>
+
+A chunk of APL code to initialise a vector containing test data:
+the C<prtfr> value for the corresponding date in F<testapl>.
+
 =back
 
 =head1 DESCRIPTION (FRANCAIS)
@@ -629,6 +660,15 @@ Ces données sont des groupes de 7 nombres : la date
 grégorienne au format AAAA MM JJ, la date républicaine
 correspondant au même format et la valeur Rata Die.
 
+=item F<testapl1>
+
+Ce fichier contient un morceau de code APL, destiné à 
+initialiser une autre variable avec les données de tests.
+Cette autre variable contient les chaînes de caractères
+correspondant à ce que renvoie la fonction C<prtfr> 
+quand elle reçoit comme paramètre la date correspondante de
+F<testapl>.
+
 =back
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
@@ -663,12 +703,12 @@ Jean Forget, JFORGET (à) cpan.org
 
 =head1 LICENSE AND COPYRIGHT / LICENCE ET COPYRIGHT
 
-(C) Jean Forget, 2012, 2013, 2014, all rights reserved.
+(C) Jean Forget, 2012, 2013, 2014, 2015, all rights reserved.
 
 The terms of license for this script are the same as Perl's:
 GNU General Public License (GPL) and Artistic License.
 
-(C) Jean Forget, 2012, 2013, 2014, tous droits réservés.
+(C) Jean Forget, 2012, 2013, 2014, 2015, tous droits réservés.
 
 Les termes de licence de ce script sont les mêmes termes que pour Perl
 : GNU General Public License (GPL) et Artistic License.
