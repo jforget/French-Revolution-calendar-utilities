@@ -28,9 +28,10 @@ the generated files contains lines
 that must be copied-pasted into an external
 source file.
 
-gen-lisp
---------
+gen-feasts
+----------
 
 This program generates the list of feasts in
 the French Revolutionary calendar, for
-inclusion in Emacs' cal-french.el program.
+inclusion in Emacs' cal-french.el program
+or in other programs.

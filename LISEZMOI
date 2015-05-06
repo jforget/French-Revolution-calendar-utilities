@@ -29,9 +29,10 @@ il faut quelques opérations d'édition pour
 copier les lignes générées dans un fichier
 source extérieur.
 
-gen-lisp
---------
+gen-feasts
+----------
 
 Ce programme génère la liste des fêtes du
 calendrier républicain, pour l'inclure dans le
-programme cal-french.el d'Emacs.
+programme cal-french.el d'Emacs ou d'autres
+programmes.
