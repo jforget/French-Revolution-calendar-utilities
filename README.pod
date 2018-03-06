@@ -1,3 +1,9 @@
+# -*- encoding: utf-8; indent-tabs-mode: nil -*-
+
+=encoding utf8
+
+=head1 Presentation
+
 This repository contains utility programs
 for the various French Revolutionary programs
 I am interested in. Unless specified otherwise,
@@ -5,8 +11,7 @@ the programs are licensed under the same terms
 as Perl: the GPL license (version 1 or later)
 or the Artistic license.
 
-Installation
-------------
+=head1 Installation
 
 A common prerequisite for all programs is
 that you must install Perl 5.10 or a later 
@@ -17,8 +22,7 @@ be written in the program's documentation.
 Use C<perlpod> I<program-name> and look
 at the I<DEPENDENCIES> paragraph.
 
-gen-tests
----------
+=head1 gen-tests
 
 This program generates a few test files
 for various French Revolutionary calendar
@@ -28,8 +32,7 @@ the generated files contains lines
 that must be copied-pasted into an external
 source file.
 
-gen-feasts
-----------
+=head1 gen-feasts
 
 This program generates the list of feasts in
 the French Revolutionary calendar, for

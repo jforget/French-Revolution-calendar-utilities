@@ -1,3 +1,9 @@
+# -*- encoding: utf-8; indent-tabs-mode: nil -*-
+
+=encoding utf8
+
+=head1 Présentation
+
 Ce dépôt contient plusieurs utilitaires
 pour les divers programmes de calendrier
 républicain auxquels je m'intéresse.
@@ -6,8 +12,7 @@ avec les mêmes termes de licence que Perl :
 la licence GPL version 1 ou ultérieure,
 ou la licence artistique.
 
-Installation
-------------
+=head1 Installation
 
 Une prérequis commun à tous les programmes est
 l'installation de Perl 5.10 ou plus récent, ainsi
@@ -18,8 +23,7 @@ chose, cela sera marqué dans sa documentation.
 Utilisez C<perlpod> I<nom-du-programme> 
 et lisez le paragraphe I<DEPENDANCES>.
 
-gen-tests
----------
+=head1 gen-tests
 
 Ce programme génère des fichiers de tests pour
 divers programme de calendrier républicain.
@@ -29,8 +33,7 @@ il faut quelques opérations d'édition pour
 copier les lignes générées dans un fichier
 source extérieur.
 
-gen-feasts
-----------
+=head1 gen-feasts
 
 Ce programme génère la liste des fêtes du
 calendrier républicain, pour l'inclure dans le
