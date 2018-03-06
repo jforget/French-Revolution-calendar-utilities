@@ -3,7 +3,7 @@
 # Generating tests files for various programs dealing with the French Revolutionary calendar
 # Génération des fichiers de test pour divers programmes de calendrier républicain
 #
-# Copyright (C) 2012, 2013, 2014, Jean Forget
+# Copyright (C) 2012, 2013, 2014, 2015, 2018, Jean Forget
 #
 # Author: Jean Forget
 # Maintainer: Jean Forget
@@ -14,7 +14,7 @@
 # -- either the GNU General Public License as published by
 #    the Free Software Foundation; version 1, or (at your option)
 #    any later version,
-# -- or the Artistic Licence.
+# -- or the Artistic License.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,6 +55,12 @@ my @sortie = (
         [ 'testcalfr-mdyl', 'I', sub { gen48(@_, "%m%d%Y", "%A %d %B %EY %Ej", 0) } ],
         [ 'testapl',        'U', \&genapl ],
         [ 'testapl1',       'U', \&genapl1 ],
+        [ 'entree-rep',       'U', sub { gen_entree_pascal(2, @_[0, 2]) } ],
+        [ 'entree-greg',      'U', sub { gen_entree_pascal(3, @_[0, 1]) } ],
+        [ 'sortie-greg-arith','U', sub { gen_sortie_pascal('arith', 'rg', @_) } ],
+        [ 'sortie-greg-equi', 'U', sub { gen_sortie_pascal('astro', 'rg', @_) } ],
+        [ 'sortie-rep-arith', 'U', sub { gen_sortie_pascal('arith', 'gr', @_) } ],
+        [ 'sortie-rep-equi',  'U', sub { gen_sortie_pascal('astro', 'gr', @_) } ],
     );
 for (@sortie) {
   open my $f, '>', $_->[0]
@@ -254,7 +260,7 @@ sub lisp_debut {
 ; Generated test file for the Emacs cal-french.el program.
 ; Fichier de test généré pour tester le programme cal-french.el de Emacs
 ;
-; Copyright (C) 2014, Jean Forget
+; Copyright (C) 2014, 2018, Jean Forget
 ;
 ; Author: Jean Forget
 ; Maintainer: Jean Forget
@@ -353,6 +359,35 @@ sub genapl1 {
     return join "\n", @results, "R ← $nb $max_len ⍴ V";
   }
 }
+
+sub gen_entree_pascal {
+  my ($option, $num_test, $date) = @_;
+  return "" if $num_test == 0 or $num_test == -1;
+  return sprintf("%d\n%d %d %d\n", $option, $date->day, $date->month, $date->year);
+}
+
+sub gen_sortie_pascal {
+  my ($algo, $sens, $num_test, $dg, $dr) = @_;
+  return "" if $num_test == 0 or $num_test == -1;
+  if ($algo eq 'astro') {
+    my $y = $dg->year;
+    my $m = $dg->month;
+    my $d = $dg->day;
+    my $str = `./conv.cl $y $m $d`;
+    ($y, $m, $d) = $str =~ /\((\d+)\s+(\d+)\s+(\d+)\)/;
+    $dr = DateTime::Calendar::FrenchRevolutionary->new(year => $y, month => $m, day => $d);
+  }
+  my $strr = $dr->strftime("%A %e %B %EY, %Ej");
+  my $strg = $dg->strftime("%A %e %B %Y");
+  if ($sens eq 'gr') {
+    return "$strg\n$strr\n";
+  }
+  else {
+    return "$strr\n$strg\n";
+  }
+}
+
+
 __END__ 
 
 =encoding utf8
@@ -446,10 +481,11 @@ will have shown that F<DateTime::Calendar::FrenchRevolutionary>
 is right, any C<not ok> result from the other testing
 programs will show that the tested program is wrong.
 
-Each test file is described with a 2-element list, which
-becomes a 3-element list when the program runs.
-The first element is the filename. The third element
-is the filehandle. The second element is a coderef, 
+Each test file is described with a 3-element list, which
+becomes a 4-element list when the program runs.
+The first element is the filename. The second element is C<I>
+for "ISO-8859-1" or C<U> for "UTF-8". The fourth element
+is the filehandle. The third element is a coderef, 
 This coderef is called in three circumstances:
 
 =over 4
@@ -527,6 +563,42 @@ in the same format and the Rata Die day value.
 A chunk of APL code to initialise a vector containing test data:
 the C<prtfr> value for the corresponding date in F<testapl>.
 
+=item F<entree-greg>
+
+This file contains the input data to the Pascal program C<calfr>
+when running in "Unix pipeline mode", to check the conversion of dates
+from Gregorian to French Revolutionary.
+
+=item F<entree-rep>
+
+This file contains the input data to the Pascal program C<calfr>
+when running in "Unix pipeline mode", to check the conversion of dates
+from French Revolutionary to Gregorian.
+
+=item F<sortie-greg-arith>
+
+This file contains the expected output from the Pascal program
+C<calfr> when checking the conversion of dates from French
+Revolutionary to Gregorian with Romme's arithmetic rule.
+
+=item F<sortie-greg-equi>
+
+This file contains the expected output from the Pascal program
+C<calfr> when checking the conversion of dates from French
+Revolutionary to Gregorian with the equinox astronomical rule.
+
+=item F<sortie-rep-arith>
+
+This file contains the expected output from the Pascal program
+C<calfr> when checking the conversion of dates from Gregorian
+to French Revolutionary with Romme's arithmetic rule.
+
+=item F<sortie-rep-equi>
+
+This file contains the expected output from the Pascal program
+C<calfr> when checking the conversion of dates from Gregorian
+to French Revolutionary with the equinox astronomical rule.
+
 =back
 
 =head1 DESCRIPTION (FRANCAIS)
@@ -579,11 +651,12 @@ En revanche, si une erreur est détectée par l'un des autres
 fichiers de tests, c'est une erreur du programme dans le langage
 cible.
 
-Chaque fichier de tests est défini par une liste à deux
-entrées, qui devient une liste à trois entrées le temps
+Chaque fichier de tests est défini par une liste à trois
+entrées, qui devient une liste à quatre entrées le temps
 de l'exécution du programme. La première entrée est le nom
-du fichier en sortie. La troisième entrée est le I<filehandle>
-correspondant à ce fichier. La deuxième entrée est la 
+du fichier en sortie. La deuxième entrée est un S<« I »> pour S<« ISO-8859-1»>
+ou un S<« U »> pour S<« UTF-8 »>. La quatrième entrée est le I<filehandle>
+correspondant à ce fichier. La troisième entrée est la 
 référence à la routine d'alimentation du fichier de tests.
 Elle est appelée de trois façons différentes :
 
@@ -669,6 +742,46 @@ correspondant à ce que renvoie la fonction C<prtfr>
 quand elle reçoit comme paramètre la date correspondante de
 F<testapl>.
 
+=item F<entree-greg>
+
+Ce fichier contient les données en entrée du programme Pascal
+C<calfr> en mode S<« laconique »>, pour tester la conversion
+du calendrier grégorien vers le calendrier républicain.
+
+=item F<entree-rep>
+
+Ce fichier contient les données en entrée du programme Pascal
+C<calfr> en mode S<« laconique »>, pour tester la conversion
+du calendrier républicain vers le calendrier grégorien.
+
+=item F<sortie-greg-arith>
+
+Ce fichier contient les données en sortie du programme Pascal
+C<calfr> en mode S<« laconique »>, pour tester la conversion
+du calendrier républicain vers le calendrier grégorien,
+en utilisant la règle arithmétique de Romme.
+
+=item F<sortie-greg-equi>
+
+Ce fichier contient les données en sortie du programme Pascal
+C<calfr> en mode S<« laconique »>, pour tester la conversion
+du calendrier républicain vers le calendrier grégorien,
+en utilisant la règle astronomique de l'équinoxe d'automne.
+
+=item F<sortie-rep-arith>
+
+Ce fichier contient les données en entrée du programme Pascal
+C<calfr> en mode S<« laconique »>, pour tester la conversion
+du calendrier grégorien vers le calendrier républicain,
+en utilisant la règle arithmétique de Romme.
+
+=item F<sortie-rep-equi>
+
+Ce fichier contient les données en entrée du programme Pascal
+C<calfr> en mode S<« laconique »>, pour tester la conversion
+du calendrier grégorien vers le calendrier républicain,
+en utilisant la règle astronomique de l'équinoxe d'automne.
+
 =back
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
@@ -684,6 +797,16 @@ F<DateTime>
 F<DateTime::Calendar::FrenchRevolutionary>
 
 v5.10 : C<say>, I<defined-or>, F<Getopt::Long> (core module)
+
+F<calendrica-3.0.cl> (CLISP), program provided  by E. M. Reingold and N. Dershowitz
+based on their book  I<Calendrical Calculations Third Edition>. Available at
+L<http://www.cambridge.org/ch/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition#resources#e2jTvv2OqgtTRWik.97>
+or at L<https://github.com/espinielli/pycalcal>
+
+F<calendrica-3.0.cl> (CLISP), programme proposé par E. M. Reingold et N. Dershowitz
+en complément à leur livre I<Calendrical Calculations Third Edition>. Disponible à la page
+L<http://www.cambridge.org/ch/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition#resources#e2jTvv2OqgtTRWik.97>
+ou bien à L<https://github.com/espinielli/pycalcal>
 
 =head1 INCOMPATIBILITIES / INCOMPATIBILITÉS
 
@@ -703,14 +826,19 @@ Jean Forget, JFORGET (à) cpan.org
 
 =head1 LICENSE AND COPYRIGHT / LICENCE ET COPYRIGHT
 
-(C) Jean Forget, 2012, 2013, 2014, 2015, all rights reserved.
+(C) Jean Forget, 2012, 2013, 2014, 2015, 2018, all rights reserved.
 
 The terms of license for this script are the same as Perl's:
 GNU General Public License (GPL) and Artistic License.
 
-(C) Jean Forget, 2012, 2013, 2014, 2015, tous droits réservés.
+(C) Jean Forget, 2012, 2013, 2014, 2015, 2018, tous droits réservés.
 
-Les termes de licence de ce script sont les mêmes termes que pour Perl
-: GNU General Public License (GPL) et Artistic License.
+Les termes de licence de ce script sont les mêmes termes que pour Perl :
+GNU General Public License (GPL) et Artistic License.
+
+For F<calendrica-3.0.cl>, read the embedded license conditions.
+
+Pour F<calendrica-3.0.cl>, les conditions de licence se trouvent à l'intérieur du fichier
+(en anglais).
 
 =cut
