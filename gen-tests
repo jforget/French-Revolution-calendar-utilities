@@ -824,6 +824,71 @@ Aucune erreur identifiée.
 
 Jean Forget, JFORGET (à) cpan.org
 
+=head1 SEE ALSO
+
+=head2 Software
+
+=head3 By me
+
+L<DateTime::Calendar::FrenchRevolutionary> or L<https://github.com/jforget/DateTime-Calendar-FrenchRevolutionary>
+
+L<Date::Convert::French_Rev> or L<https://github.com/jforget/Date-Convert-French_Rev>
+
+L<https://www.gnu.org/software/apl/Bits_and_Pieces/calfr.apl.html> or L<https://github.com/jforget/apl-calendar-french>
+
+L<https://www.hpcalc.org/details/7309> or L<https://github.com/jforget/hp48-hp50-French-Revolutionary-calendar>
+
+L<https://github.com/jforget/hp41-calfr>
+
+L<https://github.com/jforget/Pascal-French-Revolutionary-Calendar>
+
+=head3 Only partly by me
+
+L<https://github.com/jforget/emacs-lisp-cal-french>, a fork of F<calendar/cal-french.el> in Emacs
+
+=head3 Not by me
+
+CALENDRICA 3.0 -- Common Lisp, which can be download in the "Resources" section of
+L<http://www.cambridge.org/us/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition?format=PB&isbn=9780521702386>
+
+French Calendar for Android at
+L<https://f-droid.org/packages/ca.rmen.android.frenchcalendar/>
+or L<https://github.com/caarmen/FRCAndroidWidget>
+and L<https://github.com/caarmen/french-revolutionary-calendar>
+
+Thermidor for Android at L<https://github.com/jhbadger/Thermidor-Android>
+
+A Ruby program at L<https://github.com/jhbadger/FrenchRevCal-ruby>
+
+=head2 Books
+
+Quid 2001, M and D Frémy, publ. Robert Laffont
+
+Agenda Républicain 197 (1988/89), publ. Syros Alternatives
+
+Any French schoolbook about the French Revolution
+
+The French Revolution, Thomas Carlyle, Oxford University Press
+
+Calendrier Militaire, anonymous
+
+Calendrical Calculations (Third Edition) by Nachum Dershowitz and
+Edward M. Reingold, Cambridge University Press, see
+L<http://www.calendarists.com>
+or L<http://www.cambridge.org/us/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition?format=PB&isbn=9780521702386>.
+
+=head2 Internet
+
+L<http://www.faqs.org/faqs/calendars/faq/part3/>
+
+L<http://datetime.mongueurs.net/>
+
+L<http://www.allhotelscalifornia.com/kokogiakcom/frc/default.asp>
+
+L<https://en.wikipedia.org/wiki/French_Republican_Calendar>
+
+L<http://prairial.free.fr/calendrier/calendrier.php?lien=sommairefr> (in French)
+
 =head1 LICENSE AND COPYRIGHT / LICENCE ET COPYRIGHT
 
 (C) Jean Forget, 2012, 2013, 2014, 2015, 2018, all rights reserved.
