@@ -3,7 +3,7 @@
 # Generating the list of feasts for cal-french.el from Emacs and other similar programs
 # Génération de la liste des fêtes pour cal-french.el d'Emacs et pour d'autres programmes similaires
 #
-# Copyright (C) 2014, 2015, Jean Forget
+# Copyright (C) 2014, 2015, 2018, Jean Forget
 #
 # Author: Jean Forget
 # Maintainer: Jean Forget
@@ -36,7 +36,7 @@ my $lang = 'lisp';
 Getopt::Long::GetOptions('lang:s'  => \$lang,
     ) or die "Problème avec les options";
 $lang = lc($lang);
-if ($lang ne 'lisp' && $lang ne 'apl') {
+if ($lang ne 'lisp' && $lang ne 'apl' && $lang ne 'pascal') {
   die "Unknown language: '$lang'";
 }
 
@@ -88,6 +88,10 @@ given ($lang) {
     $max_multi -= 2; # because the quotes delimiters were included in the string length
     say "R ← 366 $max_multi ⍴ V";
   }
+  when ('pascal') {
+    $format = "      %3d : ch := %s;\n";
+    retrieve($format, @feast_multi);
+  }
 }
 
 sub store_month {
@@ -95,8 +99,9 @@ sub store_month {
   my $date = DateTime::Calendar::FrenchRevolutionary->new(year => 220, month => $month, day => 1, locale => 'fr');
   my $marker;
   given ($lang) {
-    when ("lisp") { $marker = ";;"; }
-    when ("apl" ) { $marker = "⍝"; }
+    when ("lisp"   ) { $marker = ";;"; }
+    when ("apl"    ) { $marker = "⍝"; }
+    when ("pascal" ) { $marker = "{"; }
   }
   my $comment = $date->strftime("$marker %B");
   push @feast_multi,  $comment;
@@ -106,7 +111,10 @@ sub store_day {
   my ($month, $day) = @_;
   my $date = DateTime::Calendar::FrenchRevolutionary->new(year => 220, month => $month, day => $day, locale => 'fr');
   my $feast = $date->strftime(qq{"%EJ"});
-  $feast =~ s/^"Jour /"/;
+  if ($lang eq 'pascal') {
+    $feast  = $date->strftime(qq{"%Ej"});
+  }
+  $feast =~ s/^"Jour /"/i;
   if (length($feast) > $max_multi) {
     $max_multi = length($feast);
   }
@@ -120,15 +128,22 @@ sub store_day {
 }
 sub retrieve {
   my ($format, @list) = @_;
+  my $nb_j = 0;
   while (@list) {
     my $marker;
     given ($lang) {
-      when ("lisp") { $marker = ";"; }
-      when ("apl" ) { $marker = "⍝"; }
+      when ("lisp"   ) { $marker = ";"; }
+      when ("apl"    ) { $marker = "⍝"; }
+      when ("pascal" ) { $marker = "{"; }
     }
     my $c1 = shift @list;
-    if (substr($c1, 0, 1) eq $marker) {
-      say $c1
+    if (substr($c1, 0, length($marker)) eq $marker) {
+      if ($lang ne 'pascal') {
+        say $c1;
+      }
+      else {
+        say "          $c1 }";
+      }
     }
     elsif ($lang eq 'lisp') {
       my $c2 = shift @list;
@@ -147,6 +162,12 @@ sub retrieve {
       # ... we rely on the fact there are no inner double quotes
       printf($format, $c1);
     }
+    elsif ($lang eq 'pascal') {
+      $c1 =~ s/'/''/g; # inner single quotes (string characters) are doubled
+      $c1 =~ s/"/'/g;  # outer quotes (string delimiters) are single quotes too
+      # ... we rely on the fact there are no inner double quotes
+      printf($format, ++$nb_j, $c1);
+    }
   }
 }
 __END__ 
@@ -161,8 +182,9 @@ gen-feasts -- un programme pour générer la liste des fêtes pour F<cal-french.
 
 =head1 UTILISATION
 
-gen-feasts --lang=lisp
-gen-feasts --lang=apl
+  gen-feasts --lang=lisp
+  gen-feasts --lang=apl
+  gen-feasts --lang=pascal
 
 =head1 CALL PARAMETERS / PARAMÈTRES D'APPEL
 
@@ -170,21 +192,21 @@ gen-feasts --lang=apl
 
 =item lang
 
-Target language. For the moment, the only accepted languages are Lisp and APL.
+Target language. For the moment, the only accepted languages are Lisp, APL and Pascal.
 
-Langage de destination. Pour l'instant, seuls Lisp et APL sont acceptés.
+Langage de destination. Pour l'instant, seuls Lisp, APL et Pascal sont acceptés.
 
 =back
 
 =head1 DESCRIPTION (ENGLISH)
 
 This program generates the list  of feasts in the French Revolutionary
-calendar, for inclusion in a Lisp or APL program.
+calendar, for inclusion in a Lisp, APL or Pascal program.
 
 =head1 DESCRIPTION (FRANCAIS)
 
 Ce programme génère la liste des fêtes du calendrier républicain, pour
-l'inclure dans un programme Lisp ou APL.
+l'inclure dans un programme Lisp, APL ou Pascal.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
@@ -299,12 +321,12 @@ L<http://prairial.free.fr/calendrier/calendrier.php?lien=sommairefr> (in French)
 
 =head1 LICENSE AND COPYRIGHT / LICENCE ET COPYRIGHT
 
-(C) Jean Forget, 2014, 2015, all rights reserved.
+(C) Jean Forget, 2014, 2015, 2018, all rights reserved.
 
 The  terms of  license for  this script  are the  same as  Perl's: GNU
 General Public License (GPL) and Artistic License.
 
-(C) Jean Forget, 2014, 2015, tous droits réservés.
+(C) Jean Forget, 2014, 2015, 2018, tous droits réservés.
 
 Les termes  de licence  de ce  script sont les  mêmes termes  que pour
 S<Perl :> GNU General Public License (GPL) et Artistic License.
