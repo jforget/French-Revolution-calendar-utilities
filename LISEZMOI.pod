@@ -14,7 +14,7 @@ ou la licence artistique.
 
 =head1 Installation
 
-Une prérequis commun à tous les programmes est
+Un prérequis commun à tous les programmes Perl est
 l'installation de Perl 5.10 ou plus récent, ainsi
 que des modules F<DateTime> et
 F<DateTime::Calendar::FrenchRevolutionary>.
@@ -22,6 +22,11 @@ Si un programme particulier a besoin d'autre
 chose, cela sera marqué dans sa documentation.
 Utilisez C<perlpod> I<nom-du-programme> 
 et lisez le paragraphe I<DEPENDANCES>.
+
+Quant aux programmes C-Lisp, ils ont pour
+prérequis l'installation du programme
+F<calendrica-3.0.cl>. Voir les commentaires
+des programmes.
 
 =head1 gen-tests
 
@@ -39,3 +44,16 @@ Ce programme génère la liste des fêtes du
 calendrier républicain, pour l'inclure dans le
 programme cal-french.el d'Emacs ou d'autres
 programmes.
+
+=head1 conv.cl
+
+Script pour convertir une date grégorienne en date
+républicaine, en utilisant la règle des équinoxes même
+après l'année où la mise en place de la règle arithmétique
+de Romme était prévue.
+
+=head1 cmpeq.cl
+
+Script déterminant le premier Vendémiaire pour un certain
+nombre d'années en utilisant les deux règles, équinoxes et Romme.
+Cela permet de comparer les deux règles entre elles.

@@ -13,7 +13,7 @@ or the Artistic license.
 
 =head1 Installation
 
-A common prerequisite for all programs is
+A common prerequisite for all Perl programs is
 that you must install Perl 5.10 or a later 
 version, and the modules F<DateTime> and
 F<DateTime::Calendar::FrenchRevolutionary>.
@@ -21,6 +21,10 @@ If a specific program needs more, it will
 be written in the program's documentation.
 Use C<perlpod> I<program-name> and look
 at the I<DEPENDENCIES> paragraph.
+
+As for C-Lisp programs, a prerequisite is the
+installation of F<calendrica-3.0.cl>. See the
+comments inside the source files.
 
 =head1 gen-tests
 
@@ -38,3 +42,14 @@ This program generates the list of feasts in
 the French Revolutionary calendar, for
 inclusion in Emacs' cal-french.el program
 or in other programs.
+
+=head1 conv.cl
+
+Script converting Gregorian dates into French Revolutionary,
+using the equinox rule, even after the date when Romme's arithmetic
+rule was supposed to be in effect.
+
+=head1 cmpeq.cl
+
+Script computing the 1st Vendémiaire using both rules for some
+number of years, to show how the rules compare to each other.
