@@ -68,10 +68,10 @@ my @lignes = qx/$lisp $pgl $nb/;
 for (@lignes) {
   my ($re_y, $gr_y, $equi_d, $arit_d) = $_ =~ /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
   print $e2 "3\n$equi_d 9 $gr_y\n";
-  my $date_g = DateTime->new(year => $gr_y, month => 9, day => $equi_d, locale => 'fr');
-  my $date_r = DateTime::Calendar::FrenchRevolutionary->new(year => $re_y, month => 1, day => 1, locale => 'fr');
-  my $ch_gr = $date_g->strftime("%A %e %B %Y");
-  my $ch_re = $date_r->strftime("%A %e %B %EY, %Ej");
+  my $date_gr = DateTime                               ->new(year => $gr_y, month => 9, day => $equi_d, locale => 'fr');
+  my $date_re = DateTime::Calendar::FrenchRevolutionary->new(year => $re_y, month => 1, day =>       1, locale => 'fr');
+  my $ch_gr   = $date_gr->strftime("%A %e %B %Y");
+  my $ch_re   = $date_re->strftime("%A %e %B %EY, %Ej");
   print $s1 "$ch_re\n$ch_gr\n";
   print $s2 "$ch_gr\n$ch_re\n";
 }
@@ -91,7 +91,7 @@ __END__
 
 =head1 NAME / NOM
 
-gen-astro-tests -- a program to generate a liste of tests for the equinox rule
+gen-astro-tests -- a program to generate a list of tests for the equinox rule
 
 gen-astro-tests -- un programme pour générer une liste de tests pour la règle des équinoxes
 
@@ -109,12 +109,18 @@ Target language. For the moment, the only accepted language is Pascal.
 
 Langage de destination. Pour l'instant, seul Pascal est accepté.
 
+=item nb
+
+Number of years to check.
+
+Nombre d'années à tester.
+
 =back
 
 =head1 DESCRIPTION (ENGLISH)
 
-This program generates a liste of tests to check that the equinox rule
-programmed in the Pascal program is the same as the one in 
+This program generates a list of tests to check that the equinox rule
+programmed in the Pascal program give the same results as the one in 
 F<calendrica-3.0.cl>.
 
 =head1 DESCRIPTION (FRANCAIS)
@@ -157,11 +163,11 @@ Aucune erreur identifiée dans ce script.
 
 Jean Forget, JFORGET (à) cpan.org
 
-=head1 SEE ALSO
+=head1 SEE ALSO / VOIR ÉGALEMENT
 
-=head2 Software
+=head2 Software / Logiciels
 
-=head3 By me
+=head3 By me / par moi-même
 
 L<DateTime::Calendar::FrenchRevolutionary> or L<https://github.com/jforget/DateTime-Calendar-FrenchRevolutionary>
 
@@ -175,11 +181,11 @@ L<https://github.com/jforget/hp41-calfr>
 
 L<https://github.com/jforget/Pascal-French-Revolutionary-Calendar>
 
-=head3 Only partly by me
+=head3 Only partly by me / En partie par moi
 
 L<https://github.com/jforget/emacs-lisp-cal-french>, a fork of F<calendar/cal-french.el> in Emacs
 
-=head3 Not by me
+=head3 Not by me / Pas par moi
 
 CALENDRICA 3.0 -- Common Lisp, which can be downloaded in the "Resources" section of
 L<http://www.cambridge.org/us/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition?format=PB&isbn=9780521702386>
@@ -193,13 +199,14 @@ Thermidor for Android at L<https://github.com/jhbadger/Thermidor-Android>
 
 A Ruby program at L<https://github.com/jhbadger/FrenchRevCal-ruby>
 
-=head2 Books
+=head2 Books / Livres
 
 Quid 2001, M and D Frémy, publ. Robert Laffont
 
 Agenda Républicain 197 (1988/89), publ. Syros Alternatives
 
-Any French schoolbook about the French Revolution
+Any French schoolbook about the French Revolution / n'importe quel
+livre d'Histoire scolaire portant sur la Révolution Française.
 
 The French Revolution, Thomas Carlyle, Oxford University Press
 
@@ -218,7 +225,7 @@ L<http://datetime.mongueurs.net/>
 
 L<http://www.allhotelscalifornia.com/kokogiakcom/frc/default.asp>
 
-L<https://en.wikipedia.org/wiki/French_Republican_Calendar>
+L<https://en.wikipedia.org/wiki/French_Republican_Calendar> / L<https://fr.wikipedia.org/wiki/Calendrier_républicain>
 
 L<http://prairial.free.fr/calendrier/calendrier.php?lien=sommairefr> (in French)
 
