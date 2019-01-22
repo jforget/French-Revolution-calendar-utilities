@@ -1,0 +1,237 @@
+# -*- encoding: utf-8; indent-tabs-mode: nil -*-
+#
+# Generating a list of tests for the astronomical rule in the Pascal program
+# Génération d'une liste de tests pour la règle des équinoxes dans le programme Pascal
+#
+# Copyright (C) 2019, Jean Forget
+#
+# Author: Jean Forget
+# Maintainer: Jean Forget
+# Keywords: French Revolution, calendar, Emacs
+#
+# This program is free software; you can redistribute it and modify
+# it under the terms of Perl:
+# -- either the GNU General Public License as published by
+#    the Free Software Foundation; version 1, or (at your option)
+#    any later version,
+# -- or the Artistic Licence.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Emacs; see the file COPYING. If not, see <http://www.gnu.org/licenses/>.
+
+use utf8;
+use v5.10;
+use strict;
+use warnings;
+use Getopt::Long;
+use DateTime::Calendar::FrenchRevolutionary;
+
+my $lang = 'pascal';
+my $nb   = 20;
+
+Getopt::Long::GetOptions('lang:s'  => \$lang,
+                         'nb:i'    => \$nb,
+    ) or die "Problème avec les options";
+$lang = lc($lang);
+if ($lang ne 'pascal') {
+  die "Unknown language: '$lang'";
+}
+
+my $lisp ="/usr/bin/clisp";
+my $pgl  ="cmpeq.cl";
+
+my $ent1 = 'entree-astro-rg';
+my $ent2 = 'entree-astro-gr';
+my $sor1 = 'sortie-astro-rg';
+my $sor2 = 'sortie-astro-gr';
+
+open my $e1, '>', $ent1
+  or die "ouverture $ent1 $!";
+open my $e2, '>', $ent2
+  or die "ouverture $ent2 $!";
+open my $s1, '>:encoding(UTF-8)', $sor1
+  or die "ouverture $sor1 $!";
+open my $s2, '>:encoding(UTF-8)', $sor2
+  or die "ouverture $sor2 $!";
+
+print $e1 "5\n";
+print $e2 "5\n";
+for (1..$nb) {
+  print $e1 "2\n1 1 $_\n";
+}
+my @lignes = qx/$lisp $pgl $nb/;
+for (@lignes) {
+  my ($re_y, $gr_y, $equi_d, $arit_d) = $_ =~ /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
+  print $e2 "3\n$equi_d 9 $gr_y\n";
+  my $date_g = DateTime->new(year => $gr_y, month => 9, day => $equi_d, locale => 'fr');
+  my $date_r = DateTime::Calendar::FrenchRevolutionary->new(year => $re_y, month => 1, day => 1, locale => 'fr');
+  my $ch_gr = $date_g->strftime("%A %e %B %Y");
+  my $ch_re = $date_r->strftime("%A %e %B %EY, %Ej");
+  print $s1 "$ch_re\n$ch_gr\n";
+  print $s2 "$ch_gr\n$ch_re\n";
+}
+
+close $e1
+  or die "fermeture $ent1 $!";
+close $e2
+  or die "fermeture $ent2 $!";
+close $s1
+  or die "fermeture $sor1 $!";
+close $s2
+  or die "fermeture $sor2 $!";
+
+__END__ 
+
+=encoding utf8
+
+=head1 NAME / NOM
+
+gen-astro-tests -- a program to generate a liste of tests for the equinox rule
+
+gen-astro-tests -- un programme pour générer une liste de tests pour la règle des équinoxes
+
+=head1 UTILISATION
+
+  gen-feasts --lang=pascal --nb=20
+
+=head1 CALL PARAMETERS / PARAMÈTRES D'APPEL
+
+=over 4
+
+=item lang
+
+Target language. For the moment, the only accepted language is Pascal.
+
+Langage de destination. Pour l'instant, seul Pascal est accepté.
+
+=back
+
+=head1 DESCRIPTION (ENGLISH)
+
+This program generates a liste of tests to check that the equinox rule
+programmed in the Pascal program is the same as the one in 
+F<calendrica-3.0.cl>.
+
+=head1 DESCRIPTION (FRANCAIS)
+
+Ce programme génère une liste de tests pour vérifier que la règle des équinoxes
+programmée dans le programme Pascal correspond bien à ce qui est programmé dans
+F<calendrica-3.0.cl>.
+
+=head1 CONFIGURATION ET ENVIRONNEMENT
+
+None.
+
+Néant.
+
+=head1 DEPENDENCIES / DÉPENDANCES
+
+F<DateTime>
+
+F<DateTime::Calendar::FrenchRevolutionary> version 0.12
+
+F<calendrica-3.0.cl>.
+
+v5.10 : C<say>, F<Getopt::Long> (core module)
+
+=head1 INCOMPATIBILITIES / INCOMPATIBILITÉS
+
+No known incompatibilities.
+
+Aucune incompatibilité identifiée.
+
+=head1 BUGS AND LIMITS
+
+No known bugs in this script.
+
+=head1 BOGUES ET LIMITES
+
+Aucune erreur identifiée dans ce script.
+
+=head1 AUTHOR / AUTEUR
+
+Jean Forget, JFORGET (à) cpan.org
+
+=head1 SEE ALSO
+
+=head2 Software
+
+=head3 By me
+
+L<DateTime::Calendar::FrenchRevolutionary> or L<https://github.com/jforget/DateTime-Calendar-FrenchRevolutionary>
+
+L<Date::Convert::French_Rev> or L<https://github.com/jforget/Date-Convert-French_Rev>
+
+L<https://www.gnu.org/software/apl/Bits_and_Pieces/calfr.apl.html> or L<https://github.com/jforget/apl-calendar-french>
+
+L<https://www.hpcalc.org/details/7309> or L<https://github.com/jforget/hp48-hp50-French-Revolutionary-calendar>
+
+L<https://github.com/jforget/hp41-calfr>
+
+L<https://github.com/jforget/Pascal-French-Revolutionary-Calendar>
+
+=head3 Only partly by me
+
+L<https://github.com/jforget/emacs-lisp-cal-french>, a fork of F<calendar/cal-french.el> in Emacs
+
+=head3 Not by me
+
+CALENDRICA 3.0 -- Common Lisp, which can be downloaded in the "Resources" section of
+L<http://www.cambridge.org/us/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition?format=PB&isbn=9780521702386>
+
+French Calendar for Android at
+L<https://f-droid.org/packages/ca.rmen.android.frenchcalendar/>
+or L<https://github.com/caarmen/FRCAndroidWidget>
+and L<https://github.com/caarmen/french-revolutionary-calendar>
+
+Thermidor for Android at L<https://github.com/jhbadger/Thermidor-Android>
+
+A Ruby program at L<https://github.com/jhbadger/FrenchRevCal-ruby>
+
+=head2 Books
+
+Quid 2001, M and D Frémy, publ. Robert Laffont
+
+Agenda Républicain 197 (1988/89), publ. Syros Alternatives
+
+Any French schoolbook about the French Revolution
+
+The French Revolution, Thomas Carlyle, Oxford University Press
+
+Calendrier Militaire, anonymous
+
+Calendrical Calculations (Third Edition) by Nachum Dershowitz and
+Edward M. Reingold, Cambridge University Press, see
+L<http://www.calendarists.com>
+or L<http://www.cambridge.org/us/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition?format=PB&isbn=9780521702386>.
+
+=head2 Internet
+
+L<http://www.faqs.org/faqs/calendars/faq/part3/>
+
+L<http://datetime.mongueurs.net/>
+
+L<http://www.allhotelscalifornia.com/kokogiakcom/frc/default.asp>
+
+L<https://en.wikipedia.org/wiki/French_Republican_Calendar>
+
+L<http://prairial.free.fr/calendrier/calendrier.php?lien=sommairefr> (in French)
+
+=head1 LICENSE AND COPYRIGHT / LICENCE ET COPYRIGHT
+
+(C) Jean Forget, 2019, all rights reserved.
+
+The  terms of  license for  this script  are the  same as  Perl's: GNU
+General Public License (GPL) and Artistic License.
+
+(C) Jean Forget, 2019, tous droits réservés.
+
+Les termes  de licence  de ce  script sont les  mêmes termes  que pour
+S<Perl :> GNU General Public License (GPL) et Artistic License.
+
+=cut
