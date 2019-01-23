@@ -84,7 +84,7 @@ if ($lang eq 'text') {
 }
 if ($lang eq 'pascal') {
   for my $modulo (0..3) {
-    say " " x 8, $modulo, ":      begin";
+    say "   $modulo: begin";
     my @years;
     my @itvls;
     my ($day_max, $years_max, $itvl_max) = (0) x 3;
@@ -98,20 +98,20 @@ if ($lang eq 'pascal') {
          $itvl_max  = $itvls[$val];
        }
     }
-    say ' ' x 16, 'equinoxe := ', $day_max, ';';
+    say ' ' x 9, 'equinoxe := ', $day_max, ';';
     for my $itvl (@{$result[$modulo]}) {
       my $day = $itvl->{val};
       if ($day != $day_max) {
         if ($itvl->{begin} == $itvl->{end}) {
-          say ' ' x 16, 'if annee = ', $itvl->{begin};
+          say ' ' x 9, 'if annee = ', $itvl->{begin}, ' then';
         }
         else {
-          say ' ' x 16, 'if annee >= ', $itvl->{begin}, ' and annee <= ', $itvl->{end};
+          say ' ' x 9, 'if annee >= ', $itvl->{begin}, ' and annee <= ', $itvl->{end}, ' then';
         }
-        say ' ' x 16, 'then    equinoxe := ', $day, ';';
+        say ' ' x 12, 'equinoxe := ', $day, ';';
       }
     }
-    say ' ' x 16, 'end;';
+    say '      end;';
   }
 }
 
