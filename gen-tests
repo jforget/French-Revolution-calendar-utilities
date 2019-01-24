@@ -3,7 +3,7 @@
 # Generating tests files for various programs dealing with the French Revolutionary calendar
 # Génération des fichiers de test pour divers programmes de calendrier républicain
 #
-# Copyright (C) 2012, 2013, 2014, 2015, 2018, Jean Forget
+# Copyright (C) 2012, 2013, 2014, 2015, 2018, 2019, Jean Forget
 #
 # Author: Jean Forget
 # Maintainer: Jean Forget
@@ -28,6 +28,7 @@ use utf8;
 use v5.10;
 use strict;
 use warnings;
+use experimental qw/switch/;
 use Getopt::Long;
 use DateTime::Calendar::FrenchRevolutionary;
 
@@ -369,13 +370,21 @@ sub gen_entree_pascal {
 sub gen_sortie_pascal {
   my ($algo, $sens, $num_test, $dg, $dr) = @_;
   return "" if $num_test == 0 or $num_test == -1;
-  if ($algo eq 'astro') {
+  if ($algo eq 'astro' and $sens eq 'gr') {
     my $y = $dg->year;
     my $m = $dg->month;
     my $d = $dg->day;
     my $str = `./conv.cl $y $m $d`;
     ($y, $m, $d) = $str =~ /\((\d+)\s+(\d+)\s+(\d+)\)/;
-    $dr = DateTime::Calendar::FrenchRevolutionary->new(year => $y, month => $m, day => $d);
+    $dr = DateTime::Calendar::FrenchRevolutionary->new(year => $y, month => $m, day => $d, locale => 'fr');
+  }
+  if ($algo eq 'astro' and $sens eq 'rg') {
+    my $y = $dr->year;
+    my $m = $dr->month;
+    my $d = $dr->day;
+    my $str = `./conv1.cl $y $m $d`;
+    ($y, $m, $d) = $str =~ /\((\d+)\s+(\d+)\s+(\d+)\)/;
+    $dg = DateTime->new(year => $y, month => $m, day => $d, locale => 'fr');
   }
   my $strr = $dr->strftime("%A %e %B %EY, %Ej");
   my $strg = $dg->strftime("%A %e %B %Y");
