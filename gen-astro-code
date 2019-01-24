@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 # Generating some code for the astronomical rule in the Pascal program
@@ -99,16 +100,18 @@ if ($lang eq 'pascal') {
        }
     }
     say ' ' x 9, 'equinoxe := ', $day_max, ';';
+    my $else = '';
     for my $itvl (@{$result[$modulo]}) {
       my $day = $itvl->{val};
       if ($day != $day_max) {
         if ($itvl->{begin} == $itvl->{end}) {
-          say ' ' x 9, 'if annee = ', $itvl->{begin}, ' then';
+          say ' ' x 8, "$else if (annee = ", $itvl->{begin}, ') then';
         }
         else {
-          say ' ' x 9, 'if annee >= ', $itvl->{begin}, ' and annee <= ', $itvl->{end}, ' then';
+          say ' ' x 8, "$else if (annee >= ", $itvl->{begin}, ') and (annee <= ', $itvl->{end}, ') then';
         }
-        say ' ' x 12, 'equinoxe := ', $day, ';';
+        say ' ' x 12, 'equinoxe := ', $day;
+        $else = ' else'
       }
     }
     say '      end;';
