@@ -119,15 +119,15 @@ Nombre d'années à tester.
 
 =head1 DESCRIPTION (ENGLISH)
 
-This program generates a list of tests to check that the equinox rule
-programmed in the Pascal program give the same results as the one in 
+This program generates a list of  tests to check that the equinox rule
+programmed in the  Pascal program give the same results  as the one in
 F<calendrica-3.0.cl>.
 
 =head1 DESCRIPTION (FRANCAIS)
 
-Ce programme génère une liste de tests pour vérifier que la règle des équinoxes
-programmée dans le programme Pascal correspond bien à ce qui est programmé dans
-F<calendrica-3.0.cl>.
+Ce programme génère une liste de  tests pour vérifier que la règle des
+équinoxes programmée dans le programme Pascal correspond bien à ce qui
+est programmé dans F<calendrica-3.0.cl>.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 

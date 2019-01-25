@@ -139,11 +139,12 @@ gen-astro-tests -- un programme pour générer une partie du code Pascal pour la
 
 =item lang
 
-Target language. For the moment, the only accepted language is Pascal. Or you can
-print the list of intervals as text.
+Target language. For the moment, the only accepted language is Pascal.
+Or you can print the list of intervals as text.
 
-Langage de destination. Pour l'instant, seul Pascal est accepté. Vous pouvez également
-obtenir la liste des intervalles sous forme de texte simple.
+Langage de destination. Pour l'instant, seul Pascal est accepté. Vous
+pouvez également obtenir la liste des intervalles sous forme de texte
+simple.
 
 =item nb
 
@@ -155,15 +156,15 @@ Nombre d'années à inclure dans le code cible.
 
 =head1 DESCRIPTION (ENGLISH)
 
-This program generates a portion of the code to implement the equinox rule
-in the Pascal program so it will give the same values as
+This program generates a portion of  the code to implement the equinox
+rule  in  the Pascal  program  so  it will  give  the  same values  as
 F<calendrica-3.0.cl>.
 
 =head1 DESCRIPTION (FRANCAIS)
 
-Ce programme génère une partie du code destiné à mettre en œuvre la règle des équinoxes
-dans le programme Pascal et pour obtenir les mêmes valeurs que 
-F<calendrica-3.0.cl>.
+Ce programme  génère une partie du  code destiné à mettre  en œuvre la
+règle des équinoxes dans le programme Pascal et pour obtenir les mêmes
+valeurs que F<calendrica-3.0.cl>.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 

@@ -38,6 +38,14 @@ il faut quelques opérations d'édition pour
 copier les lignes générées dans un fichier
 source extérieur.
 
+=head1 gen-astro-tests
+
+Ce programme génère des fichiers de  tests pour le programme Pascal de
+conversion, le  premier à traiter à  la fois la règle  arithmétique de
+Romme et la règle astronomique des équinoxes. Les fichiers générés par
+ce  programme permettent  de  tester de  façon  exhaustive toutes  les
+années pendant 6 millénaires.
+
 =head1 gen-feasts
 
 Ce programme génère la liste des fêtes du
@@ -45,12 +53,24 @@ calendrier républicain, pour l'inclure dans le
 programme cal-french.el d'Emacs ou d'autres
 programmes.
 
+=head1 gen-astro-code
+
+Ce programme génère une portion  de code permettant de pré-calculer la
+correspondance  entre   le  calendrier  grégorien  et   le  calendrier
+républicain en utilisant la règle astronomique des équinoxes.
+
 =head1 conv.cl
 
 Script pour convertir une date grégorienne en date
 républicaine, en utilisant la règle des équinoxes même
 après l'année où la mise en place de la règle arithmétique
 de Romme était prévue.
+
+=head1 conv1.cl
+
+Script pour  convertir une date  républicaine en date  grégorienne, en
+utilisant la  règle des  équinoxes même  après l'année  où la  mise en
+place de la règle arithmétique de Romme était prévue.
 
 =head1 cmpeq.cl
 
