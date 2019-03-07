@@ -21,7 +21,7 @@
 ; GNU General Public License for more details.
 ;
 ; You should have received a copy of the GNU General Public License
-; along with GNU Emacs; see the file COPYING. If not, see <http://www.gnu.org/licenses/>.
+; along with GNU Emacs; see the file COPYING. If not, see <https://www.gnu.org/licenses/>.
 ;
 ; This program relies upon another program by E. M. Reingold and N. Dershowitz,
 ; "calendrica-3.0.cl".
@@ -42,7 +42,7 @@
          (ari (caddr date-arith)) 
          (resultat   (cond ((eq equ ari) #\Space ) ((> equ ari) '+) ((< equ ari) '-))) )
      ;(print date-eq)
-     (format t "~3D ~D ~D ~D ~A~%" annee (+ annee 1791) equ ari resultat)
+     (format t "~4D ~D ~D ~D ~A~%" annee (+ annee 1791) equ ari resultat)
   )
 )
 (let ((annee-max (parse-integer (or (car *args*) "20"))))

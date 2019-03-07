@@ -1,0 +1,158 @@
+<html>
+<head>
+<meta http-equiv='content-type' content='Text/html; charset=utf-8' />
+<title>Analyse de la règle des équinoxes</title>
+<style>
+<!--
+.insert    { background-color: skyblue}
+.call      { background-color: yellow}
+.condcode  { background-color: lightgrey }
+.condition { font-size-adjust: .5 }
+-->
+</style>
+</head>
+<body>
+<a href='#Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a>
+<br /><a href='#equinoxrule∆license'><tt>equinoxrule∆license</tt></a>
+<br /><a href='#Introduction'>Introduction</a>
+<br /><a href='#Analyse théorique'>Analyse théorique</a>
+<br /><a href='#Analyse statistique'>Analyse statistique</a>
+<hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
+<h2><a name='equinoxrule∆license'><tt>equinoxrule∆license</tt></a></h2>
+<p>
+La partie texte de ce dépôt git est distribuée sous la licence
+Creative Commons avec attribution et partage dans les mêmes
+conditions (CC-BY-SA). La partie code de ce dépôt est distribuée
+sous la licence GPL version 1.0 ou ultérieure ou la licence artistique.
+</p>
+
+<p>
+Ainsi que le requiert la licence GPL, tout fichier de code
+doit commencer par un commentaire décrivant de façon sommaire
+le logiciel et résumant la GPL. La description sommaire en français&nbsp;:</p>
+
+<p>
+«&nbsp;Les fonctions de ce script permettent d'analyser la règle des équinoxes
+du calendrier républicain et de la comparer avec la règle arithmétique.&nbsp;»</p>
+
+<p>
+Quant au résumé de la GPL, le voici, en anglais (je ne suis
+pas assez calé pour traduire en français un texte de teneur juridique).
+</p>
+
+<pre>
+∇ calfr∆license
+'APL programs to analyze the equinox rule for the French Revolutionary calendar'
+'and compare it with the arithmetic rule.'
+''
+'Copyright (C) 2019 Jean Forget  (JFORGET at cpan dot org)'
+''
+' This program is distributed under the same terms as Perl 5.16.3:'
+' GNU Public License version 1 or later and Perl Artistic License'
+''
+' You can find the text of the licenses in the LICENSE file or at'
+' https://dev.perl.org/licenses/artistic.html'
+' and https://www.gnu.org/licenses/gpl-1.0.html.'
+''
+' Here is the summary of GPL:'
+''
+' This program is free software; you can redistribute it and/or modify'
+' it under the terms of the GNU General Public License as published by'
+' the Free Software Foundation; either version 1, or (at your option)'
+' any later version.'
+''
+' This program is distributed in the hope that it will be useful,'
+' but WITHOUT ANY WARRANTY; without even the implied warranty of'
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the'
+' GNU General Public License for more details.'
+''
+' You should have received a copy of the GNU General Public License'
+' along with this program; if not, write to the Free Software Foundation,'
+' Inc., &lt;https://www.fsf.org/&gt;.'
+∇
+</pre>
+<p>
+Comme vous pouvez le deviner, ce résumé fait partie intégrante du
+logiciel. Donc, une fois que vous êtes entrés sous APL et que vous
+avez initialisé votre espace de travail avec mon script, vous pouvez
+à tout moment afficher ce résumé.
+</p>
+
+<h1><a name='Introduction'>Introduction</a></h1>
+<p>
+Les programmes ci-dessous ont pour but d'examiner la règle des équinoxes
+utilisée pour le calendrier républicain et implémentée par Nachum Dershowitz
+et Edward Reingold en C-Lisp.</p>
+
+<p>
+La question essentielle que je cherche à résoudre est de savoir pendant
+combien de temps les fonctions de calcul de CALENDRICA 3.0 permettent
+de façon fiable de déterminer l'équinoxe d'automne. Mon but n'est pas de
+critiquer les auteurs ni de suggérer qu'ils ont mal fait leur boulot.
+Mon but est seulement d'apporter des éléments pour qu'un utilisateur puisse
+élaborer un avis éclairé et argumenté sur les fonctions de calcul et pour
+déterminer si les fonctions sont valables pour les dix prochains millénaires
+ou seulement pour les deux prochains siècles.</p>
+
+<p>
+Cela dit, j'attire votre attention sur la clause <i lang='en'>NO WARRANTY</i>
+des licences. Je propose des idées et des arguments. Mais c'est vous qui
+élaborez vos conclusions, sous votre propre responsabilité. Ni Dershowitz,
+ni Reingold, ni moi-même, ni aucune personne directement ou indirectement concernée par
+ces textes et ces programmes ne pouvons être tenus pour responsables de
+l'usage que vous en ferez.
+</p>
+
+<h1><a name='Analyse théorique'>Analyse théorique</a></h1>
+<p>
+Une année astronomique, ou année tropique, dure
+31&nbsp;556&nbsp;925,9747&nbsp;secondes, soit 365,242198781&nbsp;jours, ce qui
+nous donne la durée moyenne d'une année républicaine avec la règle des équinoxes.
+Si l'on enlève les 365 jours entiers, il reste 0,242198781&nbsp;jour, soit
+20&nbsp;925,9747 secondes.
+Avec la règle arithmétique, l'année républicaine dure en moyenne
+365,24225&nbsp;jours, soit 365&nbsp;jours plus 20&nbsp;930,4&nbsp;secondes.
+L'année grégorienne dure en moyenne 365,2425&nbsp;jours, soit 365&nbsp;jours plus
+20&nbsp;952&nbsp;secondes.</p>
+
+<p>
+L'année astronomique a donc 4,4253&nbsp;secondes de moins que l'année républicaine
+arithmétique et 27,0253&nbsp;secondes de moins que l'année grégorienne. On peut donc
+s'attendre à ce que l'année astronomique gagne un jour sur l'année républicaine
+arithmétique en 19&nbsp;524&nbsp;ans et un jour sur l'année grégorienne en
+3197&nbsp;ans.
+</p>
+
+<h1><a name='Analyse statistique'>Analyse statistique</a></h1>
+<p>
+Comme il est question de durées moyennes, il faudra travailler sur des listes
+suffisamment longues d'années pour déterminer les durées individuelles et faire la
+moyenne. Pour établir la liste, nous commençons par faire tourner <tt>cmpeq.cl</tt> et
+nous stockons le résultat dans un fichier texte. Le contenu est&nbsp;:
+</p>
+
+<pre>
+0   0    1    1 1
+1...5....0....5.7
+   3 1794 22 22  
+   4 1795 23 22 +
+   5 1796 22 22  
+</pre>
+<p>
+Colonnes 1 à 4, année républicaine (les zéros de tête sont remplacés par des espaces),</p>
+
+<p>
+Colonnes 6 à 9, année grégorienne,</p>
+
+<p>
+Colonnes 11 et 12, jour de septembre où se produit le 1er Vendémiaire selon la règle des équinoxes,</p>
+
+<p>
+Colonnes 14 et 15, jour de septembre où se produit le 1er Vendémiaire selon la règle arithmétique,</p>
+
+<p>
+Colonne 17, un symbole visualisant les années où les deux règles diffèrent.
+</p>
+
+</body>
+</html>

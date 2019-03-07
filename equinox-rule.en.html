@@ -1,0 +1,146 @@
+<html>
+<head>
+<meta http-equiv='content-type' content='Text/html; charset=utf-8' />
+<title>Analyzing the equinox rule</title>
+<style>
+<!--
+.insert    { background-color: skyblue}
+.call      { background-color: yellow}
+.condcode  { background-color: lightgrey }
+.condition { font-size-adjust: .5 }
+-->
+</style>
+</head>
+<body>
+<a href='#Analyzing the equinox rule'>Analyzing the equinox rule</a>
+<br /><a href='#equinoxrule∆license'><tt>equinoxrule∆license</tt></a>
+<br /><a href='#Introduction'>Introduction</a>
+<br /><a href='#Theoretical Analysis'>Theoretical Analysis</a>
+<br /><a href='#Statistical Analysis'>Statistical Analysis</a>
+<hr /><h1><a name='Analyzing the equinox rule'>Analyzing the equinox rule</a></h1>
+<h2><a name='equinoxrule∆license'><tt>equinoxrule∆license</tt></a></h2>
+<p>
+The text part of this repository is licensed under the terms of
+Creative Commons, with attribution and share-alike (CC-BY-SA).
+The code part of this repository is licensed with the GPL version
+1.0 or later or the Artistic License.
+</p>
+
+<p>
+As required by the GPL, each file with code must start with a one-line
+description of the program and the summary of the GPL. Here it is.
+</p>
+
+<pre>
+∇ calfr∆license
+'APL programs to analyze the equinox rule for the French Revolutionary calendar'
+'and compare it with the arithmetic rule.'
+''
+'Copyright (C) 2019 Jean Forget  (JFORGET at cpan dot org)'
+''
+' This program is distributed under the same terms as Perl 5.16.3:'
+' GNU Public License version 1 or later and Perl Artistic License'
+''
+' You can find the text of the licenses in the LICENSE file or at'
+' https://dev.perl.org/licenses/artistic.html'
+' and https://www.gnu.org/licenses/gpl-1.0.html.'
+''
+' Here is the summary of GPL:'
+''
+' This program is free software; you can redistribute it and/or modify'
+' it under the terms of the GNU General Public License as published by'
+' the Free Software Foundation; either version 1, or (at your option)'
+' any later version.'
+''
+' This program is distributed in the hope that it will be useful,'
+' but WITHOUT ANY WARRANTY; without even the implied warranty of'
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the'
+' GNU General Public License for more details.'
+''
+' You should have received a copy of the GNU General Public License'
+' along with this program; if not, write to the Free Software Foundation,'
+' Inc., &lt;https://www.fsf.org/&gt;.'
+∇
+</pre>
+<p>
+As you can see, this summary is executable code included in the software.
+So, after you have logged into APL and initialised your workspace with
+my script, you can display this summary at any moment.
+</p>
+
+<h1><a name='Introduction'>Introduction</a></h1>
+<p>
+The programs below are meant to analyze the equinox rule used for the
+French Revolutionary calendar, as implemented by Nachum Dershowitz
+and Edward Reingold in C-Lisp.</p>
+
+<p>
+The main question is to determine for how long the functions from CALENDRICA 3.0
+give the proper computations for the autumn equinox. I do not aim to
+pretend that the authors may have left some bugs in their program.
+I just want to give hints to users so they can build their own opinions
+and determine whether the functions will be accurate for the next 10 millenia
+or only for the next two centuries.</p>
+
+<p>
+Yet, I draw your attention to the "NO WARRANTY" clause in the licenses.
+I only suggest ideas and explanations. But <em>you</em> build your own
+conclusions, under your own responsibility. Neither Dershowitz, nor Reingold,
+nor me, nor any person directly or indirectly involved in these texts and programs
+can be held responsible for what you do with the texts and programs.
+</p>
+
+<h1><a name='Theoretical Analysis'>Theoretical Analysis</a></h1>
+<p>
+An astronomical year, or a tropical year, lasts
+31&nbsp;556&nbsp;925.9747&nbsp;seconds, that is 365.242198781&nbsp;days. This gives
+us the average duration of a French Revolutionary year using the equinox rule.
+If we subtract the 365 whole days, the remainder is 0.242198781&nbsp;day, or
+20&nbsp;925.9747 seconds.
+With the arithmetic rule, the French Revolutionary year average duration is
+365.24225&nbsp;days, that is 365&nbsp;days plus 20&nbsp;930.4&nbsp;seconds.
+On average the Gregorian year lasts 365.2425&nbsp;days, that is 365&nbsp;days plus
+20&nbsp;952&nbsp;seconds.</p>
+
+<p>
+The astronomical year has 4.4253&nbsp;seconds fewer than the arithmetic French Revolutionary year
+and 27.0253&nbsp;seconds fewer than the Gregorian year. We can expect that
+compared with the arithmetic French Revolutionary year,
+the astronomical year will shift by one day in 19&nbsp;524&nbsp;years and
+3197&nbsp;years will be sufficient to shift the astronomical year by one day when
+compared with the Gregorian year.
+</p>
+
+<h1><a name='Statistical Analysis'>Statistical Analysis</a></h1>
+<p>
+Since we have been talking about mean durations, we have to work on lists of years
+with a sufficient length so we can extract individual durations, compute average
+durations and find the trend. To obtain the list, we run <tt>cmpeq.cl</tt> and we
+store the output in a text file. The content is:
+</p>
+
+<pre>
+0   0    1    1 1
+1...5....0....5.7
+   3 1794 22 22  
+   4 1795 23 22 +
+   5 1796 22 22  
+</pre>
+<p>
+Columns 1 to 4: French Revolutionary year (with leading zeros replaced by spaces),</p>
+
+<p>
+Columns 6 to 9: Gregorian year,</p>
+
+<p>
+Columns 11 and 12: day number in September for the 1st Vendémiaire, using the equinox rule,</p>
+
+<p>
+Columns 14 and 15: day number in September for the 1st Vendémiaire, using the arithmetic rule,</p>
+
+<p>
+Column 17: a character to pinpoint the years when the two rules differ.
+</p>
+
+</body>
+</html>

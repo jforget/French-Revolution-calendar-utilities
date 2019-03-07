@@ -1,0 +1,186 @@
+fr: Analyse de la règle des équinoxes
+en: Analyzing the equinox rule
+equinoxrule.apl: apl
+---
+- section: equinoxrule∆license
+  equinoxrule.apl: 1
+- fr: |
+    La partie texte de ce dépôt git est distribuée sous la licence
+    Creative Commons avec attribution et partage dans les mêmes
+    conditions (CC-BY-SA). La partie code de ce dépôt est distribuée
+    sous la licence GPL version 1.0 ou ultérieure ou la licence artistique.
+- en: |
+    The text part of this repository is licensed under the terms of
+    Creative Commons, with attribution and share-alike (CC-BY-SA).
+    The code part of this repository is licensed with the GPL version
+    1.0 or later or the Artistic License.
+- fr: |
+    Ainsi que le requiert la licence GPL, tout fichier de code
+    doit commencer par un commentaire décrivant de façon sommaire
+    le logiciel et résumant la GPL. La description sommaire en français&nbsp;:
+
+    «&nbsp;Les fonctions de ce script permettent d'analyser la règle des équinoxes
+    du calendrier républicain et de la comparer avec la règle arithmétique.&nbsp;»
+
+    Quant au résumé de la GPL, le voici, en anglais (je ne suis
+    pas assez calé pour traduire en français un texte de teneur juridique).
+- en: |
+    As required by the GPL, each file with code must start with a one-line
+    description of the program and the summary of the GPL. Here it is.
+- code: |
+    ∇ calfr∆license
+    'APL programs to analyze the equinox rule for the French Revolutionary calendar'
+    'and compare it with the arithmetic rule.'
+    ''
+    'Copyright (C) 2019 Jean Forget  (JFORGET at cpan dot org)'
+    ''
+    ' This program is distributed under the same terms as Perl 5.16.3:'
+    ' GNU Public License version 1 or later and Perl Artistic License'
+    ''
+    ' You can find the text of the licenses in the LICENSE file or at'
+    ' https://dev.perl.org/licenses/artistic.html'
+    ' and https://www.gnu.org/licenses/gpl-1.0.html.'
+    ''
+    ' Here is the summary of GPL:'
+    ''
+    ' This program is free software; you can redistribute it and/or modify'
+    ' it under the terms of the GNU General Public License as published by'
+    ' the Free Software Foundation; either version 1, or (at your option)'
+    ' any later version.'
+    ''
+    ' This program is distributed in the hope that it will be useful,'
+    ' but WITHOUT ANY WARRANTY; without even the implied warranty of'
+    ' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the'
+    ' GNU General Public License for more details.'
+    ''
+    ' You should have received a copy of the GNU General Public License'
+    ' along with this program; if not, write to the Free Software Foundation,'
+    ' Inc., <https://www.fsf.org/>.'
+    ∇
+- fr: |
+    Comme vous pouvez le deviner, ce résumé fait partie intégrante du
+    logiciel. Donc, une fois que vous êtes entrés sous APL et que vous
+    avez initialisé votre espace de travail avec mon script, vous pouvez
+    à tout moment afficher ce résumé.
+- en: |
+    As you can see, this summary is executable code included in the software.
+    So, after you have logged into APL and initialised your workspace with
+    my script, you can display this summary at any moment.
+- section: 0
+  'fr,en': Introduction
+  level: 1
+- fr: |
+    Les programmes ci-dessous ont pour but d'examiner la règle des équinoxes
+    utilisée pour le calendrier républicain et implémentée par Nachum Dershowitz
+    et Edward Reingold en C-Lisp.
+
+    La question essentielle que je cherche à résoudre est de savoir pendant
+    combien de temps les fonctions de calcul de CALENDRICA 3.0 permettent
+    de façon fiable de déterminer l'équinoxe d'automne. Mon but n'est pas de
+    critiquer les auteurs ni de suggérer qu'ils ont mal fait leur boulot.
+    Mon but est seulement d'apporter des éléments pour qu'un utilisateur puisse
+    élaborer un avis éclairé et argumenté sur les fonctions de calcul et pour
+    déterminer si les fonctions sont valables pour les dix prochains millénaires
+    ou seulement pour les deux prochains siècles.
+
+    Cela dit, j'attire votre attention sur la clause <i lang='en'>NO WARRANTY</i>
+    des licences. Je propose des idées et des arguments. Mais c'est vous qui
+    élaborez vos conclusions, sous votre propre responsabilité. Ni Dershowitz,
+    ni Reingold, ni moi-même, ni aucune personne directement ou indirectement concernée par
+    ces textes et ces programmes ne pouvons être tenus pour responsables de
+    l'usage que vous en ferez.
+- en: |
+    The programs below are meant to analyze the equinox rule used for the
+    French Revolutionary calendar, as implemented by Nachum Dershowitz
+    and Edward Reingold in C-Lisp.
+
+    The main question is to determine for how long the functions from CALENDRICA 3.0
+    give the proper computations for the autumn equinox. I do not aim to
+    pretend that the authors may have left some bugs in their program.
+    I just want to give hints to users so they can build their own opinions
+    and determine whether the functions will be accurate for the next 10 millenia
+    or only for the next two centuries.
+
+    Yet, I draw your attention to the "NO WARRANTY" clause in the licenses.
+    I only suggest ideas and explanations. But <em>you</em> build your own
+    conclusions, under your own responsibility. Neither Dershowitz, nor Reingold,
+    nor me, nor any person directly or indirectly involved in these texts and programs
+    can be held responsible for what you do with the texts and programs.
+- section: 0
+  fr: Analyse théorique
+  en: Theoretical Analysis
+  level: 1
+- fr: |
+    Une année astronomique, ou année tropique, dure
+    31&nbsp;556&nbsp;925,9747&nbsp;secondes, soit 365,242198781&nbsp;jours, ce qui
+    nous donne la durée moyenne d'une année républicaine avec la règle des équinoxes.
+    Si l'on enlève les 365 jours entiers, il reste 0,242198781&nbsp;jour, soit
+    20&nbsp;925,9747 secondes.
+    Avec la règle arithmétique, l'année républicaine dure en moyenne
+    365,24225&nbsp;jours, soit 365&nbsp;jours plus 20&nbsp;930,4&nbsp;secondes.
+    L'année grégorienne dure en moyenne 365,2425&nbsp;jours, soit 365&nbsp;jours plus
+    20&nbsp;952&nbsp;secondes.
+
+    L'année astronomique a donc 4,4253&nbsp;secondes de moins que l'année républicaine
+    arithmétique et 27,0253&nbsp;secondes de moins que l'année grégorienne. On peut donc
+    s'attendre à ce que l'année astronomique gagne un jour sur l'année républicaine
+    arithmétique en 19&nbsp;524&nbsp;ans et un jour sur l'année grégorienne en
+    3197&nbsp;ans.
+- en: |
+    An astronomical year, or a tropical year, lasts
+    31&nbsp;556&nbsp;925.9747&nbsp;seconds, that is 365.242198781&nbsp;days. This gives
+    us the average duration of a French Revolutionary year using the equinox rule.
+    If we subtract the 365 whole days, the remainder is 0.242198781&nbsp;day, or
+    20&nbsp;925.9747 seconds.
+    With the arithmetic rule, the French Revolutionary year average duration is
+    365.24225&nbsp;days, that is 365&nbsp;days plus 20&nbsp;930.4&nbsp;seconds.
+    On average the Gregorian year lasts 365.2425&nbsp;days, that is 365&nbsp;days plus
+    20&nbsp;952&nbsp;seconds.
+
+    The astronomical year has 4.4253&nbsp;seconds fewer than the arithmetic French Revolutionary year
+    and 27.0253&nbsp;seconds fewer than the Gregorian year. We can expect that
+    compared with the arithmetic French Revolutionary year,
+    the astronomical year will shift by one day in 19&nbsp;524&nbsp;years and
+    3197&nbsp;years will be sufficient to shift the astronomical year by one day when
+    compared with the Gregorian year.
+- section: 0
+  fr: Analyse statistique
+  en: Statistical Analysis
+  level: 1
+- fr: |
+    Comme il est question de durées moyennes, il faudra travailler sur des listes
+    suffisamment longues d'années pour déterminer les durées individuelles et faire la
+    moyenne. Pour établir la liste, nous commençons par faire tourner <tt>cmpeq.cl</tt> et
+    nous stockons le résultat dans un fichier texte. Le contenu est&nbsp;:
+- en: |
+    Since we have been talking about mean durations, we have to work on lists of years
+    with a sufficient length so we can extract individual durations, compute average
+    durations and find the trend. To obtain the list, we run <tt>cmpeq.cl</tt> and we
+    store the output in a text file. The content is:
+- code: |
+    0   0    1    1 1
+    1...5....0....5.7
+       3 1794 22 22  
+       4 1795 23 22 +
+       5 1796 22 22  
+- fr: |
+    Colonnes 1 à 4, année républicaine (les zéros de tête sont remplacés par des espaces),
+
+    Colonnes 6 à 9, année grégorienne,
+
+    Colonnes 11 et 12, jour de septembre où se produit le 1er Vendémiaire selon la règle des équinoxes,
+
+    Colonnes 14 et 15, jour de septembre où se produit le 1er Vendémiaire selon la règle arithmétique,
+
+    Colonne 17, un symbole visualisant les années où les deux règles diffèrent.
+- en: |
+    Columns 1 to 4: French Revolutionary year (with leading zeros replaced by spaces),
+
+    Columns 6 to 9: Gregorian year,
+
+    Columns 11 and 12: day number in September for the 1st Vendémiaire, using the equinox rule,
+
+    Columns 14 and 15: day number in September for the 1st Vendémiaire, using the arithmetic rule,
+
+    Column 17: a character to pinpoint the years when the two rules differ.
+
