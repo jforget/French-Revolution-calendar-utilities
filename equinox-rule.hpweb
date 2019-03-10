@@ -28,6 +28,7 @@ equinoxrule.apl: apl
     As required by the GPL, each file with code must start with a one-line
     description of the program and the summary of the GPL. Here it is.
 - code: |
+    #!/usr/bin/apl -f
     ∇ calfr∆license
     'APL programs to analyze the equinox rule for the French Revolutionary calendar'
     'and compare it with the arithmetic rule.'
@@ -183,4 +184,35 @@ equinoxrule.apl: apl
     Columns 14 and 15: day number in September for the 1st Vendémiaire, using the arithmetic rule,
 
     Column 17: a character to pinpoint the years when the two rules differ.
+- section: equinoxrule∆vnd1eq
+  equinoxrule.apl: 2
+  level: 2
+- fr: |
+    Comme le fichier produit par <tt>cmpeq.cl</tt> contient des données
+    de longueur fixe, il est très simple d'extraire les dates pour
+    la règle des équinoxes.
+- en: |
+    Since the data in the file produced by <tt>cmpeq.cl</tt> have a fixed
+    length and a fixed position, extracting these values is very simple.
+- code: |
+    ∇ V ← equinoxrule∆vnd1eq FIC
+    V ← {⍎(⊃⍵)[11 12]} ⎕FIO[49] FIC
+    ∇
+- section: equinoxrule∆vnd1ar
+  equinoxrule.apl: 3
+  level: 2
+- fr: |
+    Et pour la règle arithmétique, c'est aussi simple&nbsp;:
+- en: |
+    And for the arithmetic rule, it is very simple too:
+- code: |
+    ∇ V ← equinoxrule∆vnd1ar FIC
+    V ← {⍎(⊃⍵)[14 15]} ⎕FIO[49] FIC
+    ∇
+- fr: |
+    Le seul problème, c'est que c'est spécifique à GNU-APL et que cela ne
+    fonctionnera pas sur les autres interpréteurs APL.
+- en: |
+    The only problem is that it works only with GNU-APL and it will fail
+    with other APL interpreters.
 

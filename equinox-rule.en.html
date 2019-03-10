@@ -17,6 +17,8 @@
 <br /><a href='#Introduction'>Introduction</a>
 <br /><a href='#Theoretical Analysis'>Theoretical Analysis</a>
 <br /><a href='#Statistical Analysis'>Statistical Analysis</a>
+<br /><a href='#equinoxrule∆vnd1eq'><tt>equinoxrule∆vnd1eq</tt></a>
+<br /><a href='#equinoxrule∆vnd1ar'><tt>equinoxrule∆vnd1ar</tt></a>
 <hr /><h1><a name='Analyzing the equinox rule'>Analyzing the equinox rule</a></h1>
 <h2><a name='equinoxrule∆license'><tt>equinoxrule∆license</tt></a></h2>
 <p>
@@ -32,6 +34,7 @@ description of the program and the summary of the GPL. Here it is.
 </p>
 
 <pre>
+#!/usr/bin/apl -f
 ∇ calfr∆license
 'APL programs to analyze the equinox rule for the French Revolutionary calendar'
 'and compare it with the arithmetic rule.'
@@ -140,6 +143,32 @@ Columns 14 and 15: day number in September for the 1st Vendémiaire, using the a
 
 <p>
 Column 17: a character to pinpoint the years when the two rules differ.
+</p>
+
+<h2><a name='equinoxrule∆vnd1eq'><tt>equinoxrule∆vnd1eq</tt></a></h2>
+<p>
+Since the data in the file produced by <tt>cmpeq.cl</tt> have a fixed
+length and a fixed position, extracting these values is very simple.
+</p>
+
+<pre>
+∇ V ← equinoxrule∆vnd1eq FIC
+V ← {⍎(⊃⍵)[11 12]} ⎕FIO[49] FIC
+∇
+</pre>
+<h2><a name='equinoxrule∆vnd1ar'><tt>equinoxrule∆vnd1ar</tt></a></h2>
+<p>
+And for the arithmetic rule, it is very simple too:
+</p>
+
+<pre>
+∇ V ← equinoxrule∆vnd1ar FIC
+V ← {⍎(⊃⍵)[14 15]} ⎕FIO[49] FIC
+∇
+</pre>
+<p>
+The only problem is that it works only with GNU-APL and it will fail
+with other APL interpreters.
 </p>
 
 </body>
