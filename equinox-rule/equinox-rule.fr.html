@@ -20,6 +20,7 @@
 <br /><a href='#equinoxrule∆vnd1eq'><tt>equinoxrule∆vnd1eq</tt></a>
 <br /><a href='#equinoxrule∆vnd1ar'><tt>equinoxrule∆vnd1ar</tt></a>
 <br /><a href='#Calcul des moyennes glissantes'>Calcul des moyennes glissantes</a>
+<br /><a href='#equinoxrule∆movingav'><tt>equinoxrule∆movingav</tt></a>
 <hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
 <h2><a name='equinoxrule∆license'><tt>equinoxrule∆license</tt></a></h2>
 <p>
@@ -45,7 +46,7 @@ pas assez calé pour traduire en français un texte de teneur juridique).
 
 <pre>
 #!/usr/bin/apl -f
-∇ calfr∆license
+∇ equinoxrule∆license
 'APL programs to analyze the equinox rule for the French Revolutionary calendar'
 'and compare it with the arithmetic rule.'
 ''
@@ -251,5 +252,99 @@ Avec N=6000 et P=400, cela nous donne une taille totale de 2 × 5601 × 6000
 soit 67212000 valeurs.
 </p>
 
+<p>
+La deuxième façon de constituer le tableau pour calculer les moyennes glissantes
+consiste à passer par l'intermédiaire d'un tableau T à N+1 colonnes et N+1-P
+lignes. Lors de la création de ce tableau, les éléments de V remplissent les N
+premières colonnes de T. Et pour remplir T[1;N+1], on recommence à dérouler V
+et on stocke ainsi V[1] dans T[1;N+1]. Du coup, à la ligne suivante, c'est V[2]
+qui se retrouve dans T[2;1]. Le dernier élément V[N] atterrit dans T[2;N-1] et
+il reste deux places de libres, qui seront occupées par V[1] et V[2] lors du
+troisième déroulement de V. Donc, T[3;1] contiendra V[3]. Cela donne
+</p>
+
+<pre>
+ 1         2          3            N-1          N          N+1
+V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
+V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
+V[3]      V[4]       V[5]     ... V[1]         V[2]        V[3]
+...       ...        ...          ...          ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]  V[N-P]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]      V[N+1-P]
+</pre>
+<p>
+Ainsi, rien qu'en ajoutant une colonne, soit N+1-P valeurs, on obtient la
+rotation progressive pour presque rien et on utilise alors un seul tableau
+intermédiaire au lieu de deux.</p>
+
+<p>
+Mais on peut faire mieux. Le motif de rotation progressive d'une ligne à l'autre
+se retrouve aussi lorsque l'on examine le tableau colonne par colonne.
+D'où la troisième façon, qui consiste à générer le tableau avec N+1 colonnes,
+mais seulement P lignes au lieu de N+1-P. Ensuite, on tronque à N+1-P colonnes
+au lieu de P, ce qui fait que les lignes attendues se retrouvent sous la forme
+de colonnes. Il suffit alors de faire une transposition pour que les lignes
+se retrouvent bien en tant que lignes. Certes, il y a deux tableaux intermédiaires
+au lieu d'un seul, mais ces deux tableaux ont P lignes et environ N colonnes,
+ce qui est meilleur qu'un tableau à environ N lignes et N colonnes, pour peu que
+P soit inférieur à N÷3. Les deux tableaux intermédiaires sont :
+</p>
+
+<pre>
+ 1         2          3            N-1          N          N+1
+V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
+V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
+V[3]      V[4]       V[5]     ... V[1]         V[2]        V[3]
+...       ...        ...          ...          ...
+V[P-1]    V[P]       V[P+1]   ... V[P-3]       V[P-2]      V[P-1]
+V[P]      V[P+1]     V[P+2]   ... V[P-2]       V[P-1]      V[P]
+</pre>
+<p>
+Puis
+</p>
+
+<pre>
+ 1         2          3            N-(P+1)      N-P        N+1-P
+V[1]      V[2]       V[3]     ... V[N-(P+1)]   V[N-P]      V[N+1-P]
+V[2]      V[3]       V[4]     ... V[N-P]       V[N+1-P]    V[N+2-P]
+V[3]      V[4]       V[5]     ... V[N+1-P]     V[N+2-P]    V[N+3-P]
+...       ...        ...          ...          ...
+V[P-1]    V[P]       V[P+1]   ... V[N-3]       V[N-2]      V[N-1]
+V[P]      V[P+1]     V[P+2]   ... V[N-2]       V[N-1]      V[N]
+</pre>
+<p>
+Ce sera donc la méthode que nous adopterons. Éh bien non&nbsp;!
+En effet, le tableau
+</p>
+
+<pre>
+V[1]      V[2]       V[3]     ... V[P-1]   V[P]
+V[2]      V[3]       V[4]     ... V[P]     V[P+1]
+V[3]      V[4]       V[5]     ... V[P+1]   V[P+2]
+...       ...        ...          ...      ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-2]   V[N-1]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
+</pre>
+<p>
+n'est pas le but ultime du calcul, le but ultime est le vecteur de moyennes
+glissantes. Et il est tout-à-fait possible de calculer ce vecteur de moyennes
+glissantes à partir du précédent tableau intermédiaire, celui d'avant la
+transposition. Au lieu de faire la totalisation par lignes avec
+«&nbsp;<tt>+/</tt>&nbsp;», on fera la totalisation par colonne avec
+«&nbsp;<tt>+⌿</tt>&nbsp;».
+</p>
+
+<h2><a name='equinoxrule∆movingav'><tt>equinoxrule∆movingav</tt></a></h2>
+<p>
+Au final, la fonction est donc&nbsp;:
+</p>
+
+<pre>
+∇ R ← P equinoxrule∆movingav V;N;T
+N ← (⍴V)[1]
+T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
+R ← (+⌿T) ÷ P
+∇
+</pre>
 </body>
 </html>

@@ -20,6 +20,7 @@
 <br /><a href='#equinoxrule∆vnd1eq'><tt>equinoxrule∆vnd1eq</tt></a>
 <br /><a href='#equinoxrule∆vnd1ar'><tt>equinoxrule∆vnd1ar</tt></a>
 <br /><a href='#Computing the moving averages'>Computing the moving averages</a>
+<br /><a href='#equinoxrule∆movingav'><tt>equinoxrule∆movingav</tt></a>
 <hr /><h1><a name='Analyzing the equinox rule'>Analyzing the equinox rule</a></h1>
 <h2><a name='equinoxrule∆license'><tt>equinoxrule∆license</tt></a></h2>
 <p>
@@ -36,7 +37,7 @@ description of the program and the summary of the GPL. Here it is.
 
 <pre>
 #!/usr/bin/apl -f
-∇ calfr∆license
+∇ equinoxrule∆license
 'APL programs to analyze the equinox rule for the French Revolutionary calendar'
 'and compare it with the arithmetic rule.'
 ''
@@ -233,5 +234,97 @@ and N columns. With N=6000 and P=400, this gives a total space of 2 × 5601 × 6
 or 67212000 values.
 </p>
 
+<p>
+The second way to build the array consists in using an intermediate array T,
+with N+1 columns and N+1-P lines. When this array is filled with the content of
+V, the N elements from V fill the first N columns of the first line of T,
+leaving the last position T[1;N+1] empty. So V is "rewinded" and "restarted" to
+continue filling T and so, V[1] lands into T[1;N+1]. So T[2;1] is fed with V[2].
+Then the second line of T is filled with the remainder of V, until T[2;N-1] is
+filled with V[N]. So the last two positions are empty. V is once again rewinded,
+V[1] lands into T[2;N], V[2] lands into T[2;N+1] and V[3] lands into T[3;1].
+This array is:
+</p>
+
+<pre>
+ 1         2          3            N-1          N          N+1
+V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
+V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
+V[3]      V[4]       V[5]     ... V[1]         V[2]        V[3]
+...       ...        ...          ...          ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]  V[N-P]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]      V[N+1-P]
+</pre>
+<p>
+So, by the simple trick of adding one column, that is N+1-P values, we get
+for nearly free the progressive rotation and we use one intermediate array
+instead of two.</p>
+
+<p>
+But we can do even better. The progressive rotation pattern that exist when
+looking at lines in succession can also be found when looking at columns in
+succession. Therefore, the third way consists in building an array with N+1
+columns and only P lines instead of N+1-P. Then this array is truncated to N+1-P
+columns instead of P. And the last step consists in transposing the array to get
+the final array that we were waiting for, with N+1-P lines and P columns. Of
+course, we have two intermediate arrays instead of just one, but if we suppose
+that P is less than N÷3, their total size is lower than the size of the
+intermediate array of method 2. Here are both intermediate arrays:
+</p>
+
+<pre>
+ 1         2          3            N-1          N          N+1
+V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
+V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
+V[3]      V[4]       V[5]     ... V[1]         V[2]        V[3]
+...       ...        ...          ...          ...
+V[P-1]    V[P]       V[P+1]   ... V[P-3]       V[P-2]      V[P-1]
+V[P]      V[P+1]     V[P+2]   ... V[P-2]       V[P-1]      V[P]
+</pre>
+<p>
+And then
+</p>
+
+<pre>
+ 1         2          3            N-(P+1)      N-P        N+1-P
+V[1]      V[2]       V[3]     ... V[N-(P+1)]   V[N-P]      V[N+1-P]
+V[2]      V[3]       V[4]     ... V[N-P]       V[N+1-P]    V[N+2-P]
+V[3]      V[4]       V[5]     ... V[N+1-P]     V[N+2-P]    V[N+3-P]
+...       ...        ...          ...          ...
+V[P-1]    V[P]       V[P+1]   ... V[N-3]       V[N-2]      V[N-1]
+V[P]      V[P+1]     V[P+2]   ... V[N-2]       V[N-1]      V[N]
+</pre>
+<p>
+This will be the method we will use. Actually no. Because the array:
+</p>
+
+<pre>
+V[1]      V[2]       V[3]     ... V[P-1]   V[P]
+V[2]      V[3]       V[4]     ... V[P]     V[P+1]
+V[3]      V[4]       V[5]     ... V[P+1]   V[P+2]
+...       ...        ...          ...      ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-2]   V[N-1]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
+</pre>
+<p>
+is not the final step of the computation. The final step of the computation is
+the vector of moving averages and this vector can be computed from the previous
+intermediate array, the one before transposition. Instead of computing the sums
+by lines with "<tt>+/</tt>", we will compute the sums by column with
+"<tt>+⌿</tt>".
+</p>
+
+<h2><a name='equinoxrule∆movingav'><tt>equinoxrule∆movingav</tt></a></h2>
+<p>
+In the end, the function is:
+</p>
+
+<pre>
+∇ R ← P equinoxrule∆movingav V;N;T
+N ← (⍴V)[1]
+T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
+R ← (+⌿T) ÷ P
+∇
+</pre>
 </body>
 </html>
