@@ -19,6 +19,7 @@
 <br /><a href='#Statistical Analysis'>Statistical Analysis</a>
 <br /><a href='#equinoxrule∆vnd1eq'><tt>equinoxrule∆vnd1eq</tt></a>
 <br /><a href='#equinoxrule∆vnd1ar'><tt>equinoxrule∆vnd1ar</tt></a>
+<br /><a href='#Computing the moving averages'>Computing the moving averages</a>
 <hr /><h1><a name='Analyzing the equinox rule'>Analyzing the equinox rule</a></h1>
 <h2><a name='equinoxrule∆license'><tt>equinoxrule∆license</tt></a></h2>
 <p>
@@ -169,6 +170,67 @@ V ← {⍎(⊃⍵)[14 15]} ⎕FIO[49] FIC
 <p>
 The only problem is that it works only with GNU-APL and it will fail
 with other APL interpreters.
+</p>
+
+<h2><a name='Computing the moving averages'>Computing the moving averages</a></h2>
+<p>
+So we have a vector V with N numeric values and we want to compute moving
+averages over any P consecutive values. Obviously, we will obtain N+1-P results.
+As explained elsewhere, we assume that N is 6000 and P is 400.
+The first step is storing the values from V in the following table
+(N+1-P lines, P columns):
+</p>
+
+<pre>
+V[1]      V[2]       V[3]     ... V[P-1]   V[P]
+V[2]      V[3]       V[4]     ... V[P]     V[P+1]
+V[3]      V[4]       V[5]     ... V[P+1]   V[P+2]
+...       ...        ...          ...      ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-2]   V[N-1]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
+</pre>
+<p>
+And then, computing the means is a piece of cake. But how do we build this array?
+There are three ways to do it.</p>
+
+<p>
+The first way consist in building an array with N+1-P identical lines of N columns:
+</p>
+
+<pre>
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+...       ...        ...          ...      ...
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+</pre>
+<p>
+Then we apply a progressive rotate operation to the lines with one of:
+</p>
+
+<pre>
+(¯1+⍳N+1-P)⌽V
+(0,⍳N-P)⌽V
+</pre>
+<p>
+which gives:
+</p>
+
+<pre>
+
+ V[1]      V[2]       V[3]     ... V[N-1]       V[N]
+ V[2]      V[3]       V[4]     ... V[N]         V[1]
+ V[3]      V[4]       V[5]     ... V[1]         V[2]
+ ...       ...        ...          ...          ...
+ V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]
+ V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]
+</pre>
+<p>
+And then all we have to do is truncating the array by keeping the first P columns.
+The problem is that we need two temporary arrays each with (N+1-P) lines
+and N columns. With N=6000 and P=400, this gives a total space of 2 × 5601 × 6000,
+or 67212000 values.
 </p>
 
 </body>

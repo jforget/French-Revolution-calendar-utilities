@@ -19,6 +19,7 @@
 <br /><a href='#Analyse statistique'>Analyse statistique</a>
 <br /><a href='#equinoxrule∆vnd1eq'><tt>equinoxrule∆vnd1eq</tt></a>
 <br /><a href='#equinoxrule∆vnd1ar'><tt>equinoxrule∆vnd1ar</tt></a>
+<br /><a href='#Calcul des moyennes glissantes'>Calcul des moyennes glissantes</a>
 <hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
 <h2><a name='equinoxrule∆license'><tt>equinoxrule∆license</tt></a></h2>
 <p>
@@ -182,6 +183,72 @@ V ← {⍎(⊃⍵)[14 15]} ⎕FIO[49] FIC
 <p>
 Le seul problème, c'est que c'est spécifique à GNU-APL et que cela ne
 fonctionnera pas sur les autres interpréteurs APL.
+</p>
+
+<h2><a name='Calcul des moyennes glissantes'>Calcul des moyennes glissantes</a></h2>
+<p>
+On dispose d'un vecteur V de N valeurs numériques et on veut calculer
+les moyennes glissantes sur P valeurs successives. Ce qui donnera,
+bien entendu, N+1-P valeurs moyennes.</p>
+
+<p>
+Pour des raisons expliquées ailleurs, on suppose que N vaut 6000 et P vaut 400.</p>
+
+<p>
+La première étape consiste à arranger les valeurs de V dans le tableau suivant
+(N+1-P lignes, P colonnes)&nbsp;:
+</p>
+
+<pre>
+V[1]      V[2]       V[3]     ... V[P-1]   V[P]
+V[2]      V[3]       V[4]     ... V[P]     V[P+1]
+V[3]      V[4]       V[5]     ... V[P+1]   V[P+2]
+...       ...        ...          ...      ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-2]   V[N-1]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
+</pre>
+<p>
+Et ensuite, c'est l'enfance de l'art pour calculer les moyennes.
+Mais comment arriver à un tel tableau&nbsp;? Il y a trois façons de procéder.</p>
+
+<p>
+La première façon consiste à créer un tableau de N+1-P lignes identiques de N colonnes&nbsp;:
+</p>
+
+<pre>
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+...       ...        ...          ...      ...
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+</pre>
+<p>
+Ensuite, nous appliquons une rotation progressive à chaque ligne avec l'une de ces expressions&nbsp;:
+</p>
+
+<pre>
+(¯1+⍳N+1-P)⌽V
+(0,⍳N-P)⌽V
+</pre>
+<p>
+ce qui donne&nbsp;:
+</p>
+
+<pre>
+
+ V[1]      V[2]       V[3]     ... V[N-1]       V[N]
+ V[2]      V[3]       V[4]     ... V[N]         V[1]
+ V[3]      V[4]       V[5]     ... V[1]         V[2]
+ ...       ...        ...          ...          ...
+ V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]
+ V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]
+</pre>
+<p>
+Et ensuite il ne reste plus qu'à tronquer en prenant les P premières colonnes.
+Mais pour cela, nous avons eu besoin de deux tableaux à N × (N+1-P) valeurs.
+Avec N=6000 et P=400, cela nous donne une taille totale de 2 × 5601 × 6000
+soit 67212000 valeurs.
 </p>
 
 </body>

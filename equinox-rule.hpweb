@@ -215,4 +215,76 @@ equinoxrule.apl: apl
 - en: |
     The only problem is that it works only with GNU-APL and it will fail
     with other APL interpreters.
+- section: 0
+  fr: Calcul des moyennes glissantes
+  en: Computing the moving averages
+  level: 2
+- fr: |
+    On dispose d'un vecteur V de N valeurs numériques et on veut calculer
+    les moyennes glissantes sur P valeurs successives. Ce qui donnera,
+    bien entendu, N+1-P valeurs moyennes.
+
+    Pour des raisons expliquées ailleurs, on suppose que N vaut 6000 et P vaut 400.
+
+    La première étape consiste à arranger les valeurs de V dans le tableau suivant
+    (N+1-P lignes, P colonnes)&nbsp;:
+- en: |
+    So we have a vector V with N numeric values and we want to compute moving
+    averages over any P consecutive values. Obviously, we will obtain N+1-P results.
+    As explained elsewhere, we assume that N is 6000 and P is 400.
+    The first step is storing the values from V in the following table
+    (N+1-P lines, P columns):
+- code: |
+    V[1]      V[2]       V[3]     ... V[P-1]   V[P]
+    V[2]      V[3]       V[4]     ... V[P]     V[P+1]
+    V[3]      V[4]       V[5]     ... V[P+1]   V[P+2]
+    ...       ...        ...          ...      ...
+    V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-2]   V[N-1]
+    V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
+- fr: |
+    Et ensuite, c'est l'enfance de l'art pour calculer les moyennes.
+    Mais comment arriver à un tel tableau&nbsp;? Il y a trois façons de procéder.
+
+    La première façon consiste à créer un tableau de N+1-P lignes identiques de N colonnes&nbsp;:
+- en: |
+    And then, computing the means is a piece of cake. But how do we build this array?
+    There are three ways to do it.
+
+    The first way consist in building an array with N+1-P identical lines of N columns:
+- code: |
+    V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+    V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+    V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+    ...       ...        ...          ...      ...
+    V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+    V[1]      V[2]       V[3]     ... V[N-1]   V[N]
+- fr: |
+    Ensuite, nous appliquons une rotation progressive à chaque ligne avec l'une de ces expressions&nbsp;:
+- en: |
+    Then we apply a progressive rotate operation to the lines with one of:
+- code: |
+    (¯1+⍳N+1-P)⌽V
+    (0,⍳N-P)⌽V
+- fr: |
+    ce qui donne&nbsp;:
+- en: |
+    which gives:
+- code: |
+
+    V[1]      V[2]       V[3]     ... V[N-1]       V[N]
+    V[2]      V[3]       V[4]     ... V[N]         V[1]
+    V[3]      V[4]       V[5]     ... V[1]         V[2]
+    ...       ...        ...          ...          ...
+    V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]
+    V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]
+- fr: |
+    Et ensuite il ne reste plus qu'à tronquer en prenant les P premières colonnes.
+    Mais pour cela, nous avons eu besoin de deux tableaux à N × (N+1-P) valeurs.
+    Avec N=6000 et P=400, cela nous donne une taille totale de 2 × 5601 × 6000
+    soit 67212000 valeurs.
+- en: |
+    And then all we have to do is truncating the array by keeping the first P columns.
+    The problem is that we need two temporary arrays each with (N+1-P) lines
+    and N columns. With N=6000 and P=400, this gives a total space of 2 × 5601 × 6000,
+    or 67212000 values.
 
