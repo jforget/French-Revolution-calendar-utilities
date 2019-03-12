@@ -252,6 +252,8 @@ eqrule.apl: apl
 
     The first way consist in building an array with N+1-P identical lines of N columns:
 - code: |
+    N ← (⍴V)[1]
+    T1 ← (P,N) ⍴ V
     V[1]      V[2]       V[3]     ... V[N-1]   V[N]
     V[1]      V[2]       V[3]     ... V[N-1]   V[N]
     V[1]      V[2]       V[3]     ... V[N-1]   V[N]
@@ -263,14 +265,8 @@ eqrule.apl: apl
 - en: |
     Then we apply a progressive rotate operation to the lines with one of:
 - code: |
-    (¯1+⍳N+1-P)⌽V
-    (0,⍳N-P)⌽V
-- fr: |
-    ce qui donne&nbsp;:
-- en: |
-    which gives:
-- code: |
-
+    T2 ← (¯1+⍳N+1-P) ⌽ T1
+    T2 ← (0,⍳N-P)    ⌽ T1
     V[1]      V[2]       V[3]     ... V[N-1]       V[N]
     V[2]      V[3]       V[4]     ... V[N]         V[1]
     V[3]      V[4]       V[5]     ... V[1]         V[2]
@@ -308,7 +304,8 @@ eqrule.apl: apl
     V[1] lands into T[2;N], V[2] lands into T[2;N+1] and V[3] lands into T[3;1].
     This array is:
 - code: |
-    .
+    N ← (⍴V)[1]
+    T ← ((N+1-P),N+1) ⍴ V
      1         2          3            N-1          N          N+1
     V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
     V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
@@ -347,7 +344,8 @@ eqrule.apl: apl
     that P is less than N÷3, their total size is lower than the size of the
     intermediate array of method 2. Here are both intermediate arrays:
 - code: |
-    .
+    N ← (⍴V)[1]
+    T1 ← (P,N+1) ⍴ V
      1         2          3            N-1          N          N+1
     V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
     V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
@@ -360,7 +358,7 @@ eqrule.apl: apl
 - en: |
     And then
 - code: |
-    .
+    T2 ← (P,N+1-P) ↑ T1
      1         2          3            N-(P+1)      N-P        N+1-P
     V[1]      V[2]       V[3]     ... V[N-(P+1)]   V[N-P]      V[N+1-P]
     V[2]      V[3]       V[4]     ... V[N-P]       V[N+1-P]    V[N+2-P]
@@ -368,6 +366,14 @@ eqrule.apl: apl
     ...       ...        ...          ...          ...
     V[P-1]    V[P]       V[P+1]   ... V[N-3]       V[N-2]      V[N-1]
     V[P]      V[P+1]     V[P+2]   ... V[N-2]       V[N-1]      V[N]
+    T ← ⍉ T2
+     1         2          3            P-1      P
+    V[1]      V[2]       V[3]     ... V[P-1]   V[P]
+    V[2]      V[3]       V[4]     ... V[P]     V[P+1]
+    V[3]      V[4]       V[5]     ... V[P+1]   V[P+2]
+    ...       ...        ...          ...      ...
+    V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-2]   V[N-1]
+    V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
 - fr: |
     Ce sera donc la méthode que nous adopterons. Éh bien non&nbsp;!
     En effet, le tableau
@@ -406,3 +412,92 @@ eqrule.apl: apl
     T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
     R ← (+⌿T) ÷ P
     ∇
+- section: 0
+  level: 2
+  fr: Utilisation
+  en: Usage
+- fr: |
+    Pour examiner la règle des équinoxes, on prendra la liste des
+    «&nbsp;1 Vendémiaire&nbsp;» sur 6000&nbsp;ans et on fera une
+    moyenne glissante sur 400&nbsp;ans.
+
+    Pourquoi 6000&nbsp;ans&nbsp;? Parce que, lorsque j'ai écrit le 
+    <a href='https://github.com/jforget/Pascal-French-Revolutionary-Calendar'>programme Pascal de calendrier républicain</a>,
+    j'ai compilé la liste des «&nbsp;1 Vendémiaire&nbsp;» sur 6000&nbsp;ans et je ne suis pas allé
+    plus loin. Reconnaissons que cette limite est arbitraire.
+
+    Pourquoi 400&nbsp;ans&nbsp;? Dans le calendrier grégorien, la règle des années
+    bissextiles est périodique sur 400&nbsp;ans. On peut considérer que pour le
+    calendrier républicain, version arithmétique, la règle est également périodique sur
+    400&nbsp;ans, avec juste un «&nbsp;hoquet&nbsp;» à la fin de l'an 4000. Donc la
+    conversion entre grégorien et républicain est périodique sur 400&nbsp;ans avec un
+    «&nbsp;hoquet&nbsp;» tous les 4000&nbsp;ans. La moyenne glissante du vecteur
+    «&nbsp;Vnd1&nbsp;» est donc constante de l'an 1 jusqu'à l'an 3600, puis elle
+    décroît lègèrement de l'an 3601 à l'an 4000 et elle est de nouveau constante à
+    partir de 4001. Pour la version équinoxe du calendrier républicain, il y aura quand
+    même des fluctuations. Ces fluctuations seront nettement moindres pour la moyenne
+    glissante que pour les données de base, mais elles existent quand même. À ces
+    fluctuations doivent s'ajouter une dérive d'une journée en 3197 à 4000&nbsp;ans.
+    Avec
+- en: |
+    To analyse the equinox rule, we use a list of "1 Vendémiaire" over 6000 years,
+    with a moving average over 400 years.
+
+    Why 6000 years? When I wrote the
+    <a href='https://github.com/jforget/Pascal-French-Revolutionary-Calendar'>Pascal program</a>
+    for the French Revolutionary Calendar, I compiled a 6000-year list of "1 Vendémiaire"
+    and inserted into the program. So I use the same value for the analysis. I admit
+    this is an artificial value.
+
+    Why 400 years? In the Gregorian calendar, the leap year rule is periodic over
+    400 years. In the arithmetic French Revolutionary Calendar, we can consider
+    that the leap year rule is periodic over 400 years, with a glitch every 4000
+    years. Therefore, the conversion between Gregorian and French Revolutionary is
+    periodic over 400 years with a glitch every 4000 years. The moving average of
+    the "Vnd1" vector is constant from year 1 to year 3600, then it decreases a
+    little from 3601 to 4000 and then it is again constant. For the equinox
+    version, there will be fluctuations in the moving average, even if much smaller
+    than fluctuations in the raw values. And there will be a slow shift of 1 day
+    over 3197 or 4000 years.
+
+    With:
+- code: |
+    VA ← 400 eqrule∆movingav eqrule∆vnd1ar 'test-6000'
+    (0,⍳559) ,[2] 560 10 ⍴ VA
+- fr: |
+    on voit que comme attendu, la moyenne glissante est égale à 22,4 pendant
+    3600&nbsp;ans puis qu'elle décroît légèrement pour se stabiliser à 21,4 en l'an
+    4000.
+
+    Si l'on continue avec
+- en: |
+
+    we see that, as expected, the moving average is a constant 22.4 at first,
+    then from 3601 to 4000 it decreases by 1 day and from 4000 on, it stabilise
+    at 21.4.
+
+    If we go on with:
+- code: |
+    VE ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+    (0,⍳559) ,[2] 560 10 ⍴ 22.4 - VE
+- fr: |
+    on voit que la dérive atteint 1&nbsp;jour au bout de 1625&nbsp;ans environ
+    et qu'au bout de 3197&nbsp;ans elle atteint 2,8&nbsp;jours. L'algorithme
+    ne tient pas la route.
+
+    On peut également tester la dérive entre la règle arithmétique et la règle
+    des équinoxes avec
+- en: |
+    we see that the shift is 1 day after just 1625 years or so and that after 3197
+    years, its value reaches 2.8 days. The equinox algorithm does not last this
+    long.
+
+    We can also check the drift between the arithmetic rule and the equinox rule
+    with:
+- code: |
+    (0,⍳559) ,[2] 560 10 ⍴ VA - VE
+- fr: |
+    la conclusion est la même.
+- en: |
+    the conclusion is the same.    
+    

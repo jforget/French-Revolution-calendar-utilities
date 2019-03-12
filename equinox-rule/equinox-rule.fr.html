@@ -21,6 +21,7 @@
 <br /><a href='#eqrule∆vnd1ar'><tt>eqrule∆vnd1ar</tt></a>
 <br /><a href='#Calcul des moyennes glissantes'>Calcul des moyennes glissantes</a>
 <br /><a href='#eqrule∆movingav'><tt>eqrule∆movingav</tt></a>
+<br /><a href='#Utilisation'>Utilisation</a>
 <hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
 <h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
 <p>
@@ -217,6 +218,8 @@ La première façon consiste à créer un tableau de N+1-P lignes identiques de 
 </p>
 
 <pre>
+N ← (⍴V)[1]
+T1 ← (P,N) ⍴ V
 V[1]      V[2]       V[3]     ... V[N-1]   V[N]
 V[1]      V[2]       V[3]     ... V[N-1]   V[N]
 V[1]      V[2]       V[3]     ... V[N-1]   V[N]
@@ -229,21 +232,14 @@ Ensuite, nous appliquons une rotation progressive à chaque ligne avec l'une de 
 </p>
 
 <pre>
-(¯1+⍳N+1-P)⌽V
-(0,⍳N-P)⌽V
-</pre>
-<p>
-ce qui donne&nbsp;:
-</p>
-
-<pre>
-
- V[1]      V[2]       V[3]     ... V[N-1]       V[N]
- V[2]      V[3]       V[4]     ... V[N]         V[1]
- V[3]      V[4]       V[5]     ... V[1]         V[2]
- ...       ...        ...          ...          ...
- V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]
- V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]
+T2 ← (¯1+⍳N+1-P) ⌽ T1
+T2 ← (0,⍳N-P)    ⌽ T1
+V[1]      V[2]       V[3]     ... V[N-1]       V[N]
+V[2]      V[3]       V[4]     ... V[N]         V[1]
+V[3]      V[4]       V[5]     ... V[1]         V[2]
+...       ...        ...          ...          ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]
 </pre>
 <p>
 Et ensuite il ne reste plus qu'à tronquer en prenant les P premières colonnes.
@@ -264,6 +260,8 @@ troisième déroulement de V. Donc, T[3;1] contiendra V[3]. Cela donne
 </p>
 
 <pre>
+N ← (⍴V)[1]
+T ← ((N+1-P),N+1) ⍴ V
  1         2          3            N-1          N          N+1
 V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
 V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
@@ -291,6 +289,8 @@ P soit inférieur à N÷3. Les deux tableaux intermédiaires sont :
 </p>
 
 <pre>
+N ← (⍴V)[1]
+T1 ← (P,N+1) ⍴ V
  1         2          3            N-1          N          N+1
 V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
 V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
@@ -304,6 +304,7 @@ Puis
 </p>
 
 <pre>
+T2 ← (P,N+1-P) ↑ T1
  1         2          3            N-(P+1)      N-P        N+1-P
 V[1]      V[2]       V[3]     ... V[N-(P+1)]   V[N-P]      V[N+1-P]
 V[2]      V[3]       V[4]     ... V[N-P]       V[N+1-P]    V[N+2-P]
@@ -311,6 +312,14 @@ V[3]      V[4]       V[5]     ... V[N+1-P]     V[N+2-P]    V[N+3-P]
 ...       ...        ...          ...          ...
 V[P-1]    V[P]       V[P+1]   ... V[N-3]       V[N-2]      V[N-1]
 V[P]      V[P+1]     V[P+2]   ... V[N-2]       V[N-1]      V[N]
+T ← ⍉ T2
+ 1         2          3            P-1      P
+V[1]      V[2]       V[3]     ... V[P-1]   V[P]
+V[2]      V[3]       V[4]     ... V[P]     V[P+1]
+V[3]      V[4]       V[5]     ... V[P+1]   V[P+2]
+...       ...        ...          ...      ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-2]   V[N-1]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
 </pre>
 <p>
 Ce sera donc la méthode que nous adopterons. Éh bien non&nbsp;!
@@ -346,5 +355,67 @@ T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
 R ← (+⌿T) ÷ P
 ∇
 </pre>
+<h2><a name='Utilisation'>Utilisation</a></h2>
+<p>
+Pour examiner la règle des équinoxes, on prendra la liste des
+«&nbsp;1 Vendémiaire&nbsp;» sur 6000&nbsp;ans et on fera une
+moyenne glissante sur 400&nbsp;ans.</p>
+
+<p>
+Pourquoi 6000&nbsp;ans&nbsp;? Parce que, lorsque j'ai écrit le 
+<a href='https://github.com/jforget/Pascal-French-Revolutionary-Calendar'>programme Pascal de calendrier républicain</a>,
+j'ai compilé la liste des «&nbsp;1 Vendémiaire&nbsp;» sur 6000&nbsp;ans et je ne suis pas allé
+plus loin. Reconnaissons que cette limite est arbitraire.</p>
+
+<p>
+Pourquoi 400&nbsp;ans&nbsp;? Dans le calendrier grégorien, la règle des années
+bissextiles est périodique sur 400&nbsp;ans. On peut considérer que pour le
+calendrier républicain, version arithmétique, la règle est également périodique sur
+400&nbsp;ans, avec juste un «&nbsp;hoquet&nbsp;» à la fin de l'an 4000. Donc la
+conversion entre grégorien et républicain est périodique sur 400&nbsp;ans avec un
+«&nbsp;hoquet&nbsp;» tous les 4000&nbsp;ans. La moyenne glissante du vecteur
+«&nbsp;Vnd1&nbsp;» est donc constante de l'an 1 jusqu'à l'an 3600, puis elle
+décroît lègèrement de l'an 3601 à l'an 4000 et elle est de nouveau constante à
+partir de 4001. Pour la version équinoxe du calendrier républicain, il y aura quand
+même des fluctuations. Ces fluctuations seront nettement moindres pour la moyenne
+glissante que pour les données de base, mais elles existent quand même. À ces
+fluctuations doivent s'ajouter une dérive d'une journée en 3197 à 4000&nbsp;ans.
+Avec
+</p>
+
+<pre>
+VA ← 400 eqrule∆movingav eqrule∆vnd1ar 'test-6000'
+(0,⍳559) ,[2] 560 10 ⍴ VA
+</pre>
+<p>
+on voit que comme attendu, la moyenne glissante est égale à 22,4 pendant
+3600&nbsp;ans puis qu'elle décroît légèrement pour se stabiliser à 21,4 en l'an
+4000.</p>
+
+<p>
+Si l'on continue avec
+</p>
+
+<pre>
+VE ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+(0,⍳559) ,[2] 560 10 ⍴ 22.4 - VE
+</pre>
+<p>
+on voit que la dérive atteint 1&nbsp;jour au bout de 1625&nbsp;ans environ
+et qu'au bout de 3197&nbsp;ans elle atteint 2,8&nbsp;jours. L'algorithme
+ne tient pas la route.</p>
+
+<p>
+On peut également tester la dérive entre la règle arithmétique et la règle
+des équinoxes avec
+</p>
+
+<pre>
+(0,⍳559) ,[2] 560 10 ⍴ VA - VE
+</pre>
+<p>
+la conclusion est la même.
+</p>
+
 </body>
 </html>

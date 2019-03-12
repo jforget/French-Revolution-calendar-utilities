@@ -21,6 +21,7 @@
 <br /><a href='#eqrule∆vnd1ar'><tt>eqrule∆vnd1ar</tt></a>
 <br /><a href='#Computing the moving averages'>Computing the moving averages</a>
 <br /><a href='#eqrule∆movingav'><tt>eqrule∆movingav</tt></a>
+<br /><a href='#Usage'>Usage</a>
 <hr /><h1><a name='Analyzing the equinox rule'>Analyzing the equinox rule</a></h1>
 <h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
 <p>
@@ -199,6 +200,8 @@ The first way consist in building an array with N+1-P identical lines of N colum
 </p>
 
 <pre>
+N ← (⍴V)[1]
+T1 ← (P,N) ⍴ V
 V[1]      V[2]       V[3]     ... V[N-1]   V[N]
 V[1]      V[2]       V[3]     ... V[N-1]   V[N]
 V[1]      V[2]       V[3]     ... V[N-1]   V[N]
@@ -211,21 +214,14 @@ Then we apply a progressive rotate operation to the lines with one of:
 </p>
 
 <pre>
-(¯1+⍳N+1-P)⌽V
-(0,⍳N-P)⌽V
-</pre>
-<p>
-which gives:
-</p>
-
-<pre>
-
- V[1]      V[2]       V[3]     ... V[N-1]       V[N]
- V[2]      V[3]       V[4]     ... V[N]         V[1]
- V[3]      V[4]       V[5]     ... V[1]         V[2]
- ...       ...        ...          ...          ...
- V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]
- V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]
+T2 ← (¯1+⍳N+1-P) ⌽ T1
+T2 ← (0,⍳N-P)    ⌽ T1
+V[1]      V[2]       V[3]     ... V[N-1]       V[N]
+V[2]      V[3]       V[4]     ... V[N]         V[1]
+V[3]      V[4]       V[5]     ... V[1]         V[2]
+...       ...        ...          ...          ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-(2+P)]   V[N-(1+P)]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-(1+P)]   V[N-P]
 </pre>
 <p>
 And then all we have to do is truncating the array by keeping the first P columns.
@@ -247,6 +243,8 @@ This array is:
 </p>
 
 <pre>
+N ← (⍴V)[1]
+T ← ((N+1-P),N+1) ⍴ V
  1         2          3            N-1          N          N+1
 V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
 V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
@@ -273,6 +271,8 @@ intermediate array of method 2. Here are both intermediate arrays:
 </p>
 
 <pre>
+N ← (⍴V)[1]
+T1 ← (P,N+1) ⍴ V
  1         2          3            N-1          N          N+1
 V[1]      V[2]       V[3]     ... V[N-1]       V[N]        V[1]
 V[2]      V[3]       V[4]     ... V[N]         V[1]        V[2]
@@ -286,6 +286,7 @@ And then
 </p>
 
 <pre>
+T2 ← (P,N+1-P) ↑ T1
  1         2          3            N-(P+1)      N-P        N+1-P
 V[1]      V[2]       V[3]     ... V[N-(P+1)]   V[N-P]      V[N+1-P]
 V[2]      V[3]       V[4]     ... V[N-P]       V[N+1-P]    V[N+2-P]
@@ -293,6 +294,14 @@ V[3]      V[4]       V[5]     ... V[N+1-P]     V[N+2-P]    V[N+3-P]
 ...       ...        ...          ...          ...
 V[P-1]    V[P]       V[P+1]   ... V[N-3]       V[N-2]      V[N-1]
 V[P]      V[P+1]     V[P+2]   ... V[N-2]       V[N-1]      V[N]
+T ← ⍉ T2
+ 1         2          3            P-1      P
+V[1]      V[2]       V[3]     ... V[P-1]   V[P]
+V[2]      V[3]       V[4]     ... V[P]     V[P+1]
+V[3]      V[4]       V[5]     ... V[P+1]   V[P+2]
+...       ...        ...          ...      ...
+V[N-P]    V[N+1-P]   V[N+2-P] ... V[N-2]   V[N-1]
+V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
 </pre>
 <p>
 This will be the method we will use. Actually no. Because the array:
@@ -326,5 +335,68 @@ T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
 R ← (+⌿T) ÷ P
 ∇
 </pre>
+<h2><a name='Usage'>Usage</a></h2>
+<p>
+To analyse the equinox rule, we use a list of "1 Vendémiaire" over 6000 years,
+with a moving average over 400 years.</p>
+
+<p>
+Why 6000 years? When I wrote the
+<a href='https://github.com/jforget/Pascal-French-Revolutionary-Calendar'>Pascal program</a>
+for the French Revolutionary Calendar, I compiled a 6000-year list of "1 Vendémiaire"
+and inserted into the program. So I use the same value for the analysis. I admit
+this is an artificial value.</p>
+
+<p>
+Why 400 years? In the Gregorian calendar, the leap year rule is periodic over
+400 years. In the arithmetic French Revolutionary Calendar, we can consider
+that the leap year rule is periodic over 400 years, with a glitch every 4000
+years. Therefore, the conversion between Gregorian and French Revolutionary is
+periodic over 400 years with a glitch every 4000 years. The moving average of
+the "Vnd1" vector is constant from year 1 to year 3600, then it decreases a
+little from 3601 to 4000 and then it is again constant. For the equinox
+version, there will be fluctuations in the moving average, even if much smaller
+than fluctuations in the raw values. And there will be a slow shift of 1 day
+over 3197 or 4000 years.</p>
+
+<p>
+With:
+</p>
+
+<pre>
+VA ← 400 eqrule∆movingav eqrule∆vnd1ar 'test-6000'
+(0,⍳559) ,[2] 560 10 ⍴ VA
+</pre>
+<p>
+
+ we see that, as expected, the moving average is a constant 22.4 at first,
+ then from 3601 to 4000 it decreases by 1 day and from 4000 on, it stabilise
+ at 21.4.</p>
+
+<p>
+ If we go on with:
+</p>
+
+<pre>
+VE ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+(0,⍳559) ,[2] 560 10 ⍴ 22.4 - VE
+</pre>
+<p>
+we see that the shift is 1 day after just 1625 years or so and that after 3197
+years, its value reaches 2.8 days. The equinox algorithm does not last this
+long.</p>
+
+<p>
+We can also check the drift between the arithmetic rule and the equinox rule
+with:
+</p>
+
+<pre>
+(0,⍳559) ,[2] 560 10 ⍴ VA - VE
+</pre>
+<p>
+the conclusion is the same.    
+</p>
+
 </body>
 </html>
