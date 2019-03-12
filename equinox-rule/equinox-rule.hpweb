@@ -1,9 +1,9 @@
 fr: Analyse de la règle des équinoxes
 en: Analyzing the equinox rule
-equinoxrule.apl: apl
+eqrule.apl: apl
 ---
-- section: equinoxrule∆license
-  equinoxrule.apl: 1
+- section: eqrule∆license
+  eqrule.apl: 1
 - fr: |
     La partie texte de ce dépôt git est distribuée sous la licence
     Creative Commons avec attribution et partage dans les mêmes
@@ -29,7 +29,7 @@ equinoxrule.apl: apl
     description of the program and the summary of the GPL. Here it is.
 - code: |
     #!/usr/bin/apl -f
-    ∇ equinoxrule∆license
+    ∇ eqrule∆license
     'APL programs to analyze the equinox rule for the French Revolutionary calendar'
     'and compare it with the arithmetic rule.'
     ''
@@ -184,8 +184,8 @@ equinoxrule.apl: apl
     Columns 14 and 15: day number in September for the 1st Vendémiaire, using the arithmetic rule,
 
     Column 17: a character to pinpoint the years when the two rules differ.
-- section: equinoxrule∆vnd1eq
-  equinoxrule.apl: 2
+- section: eqrule∆vnd1eq
+  eqrule.apl: 2
   level: 2
 - fr: |
     Comme le fichier produit par <tt>cmpeq.cl</tt> contient des données
@@ -195,18 +195,18 @@ equinoxrule.apl: apl
     Since the data in the file produced by <tt>cmpeq.cl</tt> have a fixed
     length and a fixed position, extracting these values is very simple.
 - code: |
-    ∇ V ← equinoxrule∆vnd1eq FIC
+    ∇ V ← eqrule∆vnd1eq FIC
     V ← {⍎(⊃⍵)[11 12]} ⎕FIO[49] FIC
     ∇
-- section: equinoxrule∆vnd1ar
-  equinoxrule.apl: 3
+- section: eqrule∆vnd1ar
+  eqrule.apl: 3
   level: 2
 - fr: |
     Et pour la règle arithmétique, c'est aussi simple&nbsp;:
 - en: |
     And for the arithmetic rule, it is very simple too:
 - code: |
-    ∇ V ← equinoxrule∆vnd1ar FIC
+    ∇ V ← eqrule∆vnd1ar FIC
     V ← {⍎(⊃⍵)[14 15]} ⎕FIO[49] FIC
     ∇
 - fr: |
@@ -393,15 +393,15 @@ equinoxrule.apl: apl
     intermediate array, the one before transposition. Instead of computing the sums
     by lines with "<tt>+/</tt>", we will compute the sums by column with
     "<tt>+⌿</tt>".
-- section: equinoxrule∆movingav
-  equinoxrule.apl: 4
+- section: eqrule∆movingav
+  eqrule.apl: 4
   level: 2
 - fr: |
     Au final, la fonction est donc&nbsp;:
 - en: |
     In the end, the function is:
 - code: |
-    ∇ R ← P equinoxrule∆movingav V;N;T
+    ∇ R ← P eqrule∆movingav V;N;T
     N ← (⍴V)[1]
     T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
     R ← (+⌿T) ÷ P

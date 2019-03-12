@@ -13,16 +13,16 @@
 </head>
 <body>
 <a href='#Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a>
-<br /><a href='#equinoxrule∆license'><tt>equinoxrule∆license</tt></a>
+<br /><a href='#eqrule∆license'><tt>eqrule∆license</tt></a>
 <br /><a href='#Introduction'>Introduction</a>
 <br /><a href='#Analyse théorique'>Analyse théorique</a>
 <br /><a href='#Analyse statistique'>Analyse statistique</a>
-<br /><a href='#equinoxrule∆vnd1eq'><tt>equinoxrule∆vnd1eq</tt></a>
-<br /><a href='#equinoxrule∆vnd1ar'><tt>equinoxrule∆vnd1ar</tt></a>
+<br /><a href='#eqrule∆vnd1eq'><tt>eqrule∆vnd1eq</tt></a>
+<br /><a href='#eqrule∆vnd1ar'><tt>eqrule∆vnd1ar</tt></a>
 <br /><a href='#Calcul des moyennes glissantes'>Calcul des moyennes glissantes</a>
-<br /><a href='#equinoxrule∆movingav'><tt>equinoxrule∆movingav</tt></a>
+<br /><a href='#eqrule∆movingav'><tt>eqrule∆movingav</tt></a>
 <hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
-<h2><a name='equinoxrule∆license'><tt>equinoxrule∆license</tt></a></h2>
+<h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
 <p>
 La partie texte de ce dépôt git est distribuée sous la licence
 Creative Commons avec attribution et partage dans les mêmes
@@ -46,7 +46,7 @@ pas assez calé pour traduire en français un texte de teneur juridique).
 
 <pre>
 #!/usr/bin/apl -f
-∇ equinoxrule∆license
+∇ eqrule∆license
 'APL programs to analyze the equinox rule for the French Revolutionary calendar'
 'and compare it with the arithmetic rule.'
 ''
@@ -159,7 +159,7 @@ Colonnes 14 et 15, jour de septembre où se produit le 1er Vendémiaire selon la
 Colonne 17, un symbole visualisant les années où les deux règles diffèrent.
 </p>
 
-<h2><a name='equinoxrule∆vnd1eq'><tt>equinoxrule∆vnd1eq</tt></a></h2>
+<h2><a name='eqrule∆vnd1eq'><tt>eqrule∆vnd1eq</tt></a></h2>
 <p>
 Comme le fichier produit par <tt>cmpeq.cl</tt> contient des données
 de longueur fixe, il est très simple d'extraire les dates pour
@@ -167,17 +167,17 @@ la règle des équinoxes.
 </p>
 
 <pre>
-∇ V ← equinoxrule∆vnd1eq FIC
+∇ V ← eqrule∆vnd1eq FIC
 V ← {⍎(⊃⍵)[11 12]} ⎕FIO[49] FIC
 ∇
 </pre>
-<h2><a name='equinoxrule∆vnd1ar'><tt>equinoxrule∆vnd1ar</tt></a></h2>
+<h2><a name='eqrule∆vnd1ar'><tt>eqrule∆vnd1ar</tt></a></h2>
 <p>
 Et pour la règle arithmétique, c'est aussi simple&nbsp;:
 </p>
 
 <pre>
-∇ V ← equinoxrule∆vnd1ar FIC
+∇ V ← eqrule∆vnd1ar FIC
 V ← {⍎(⊃⍵)[14 15]} ⎕FIO[49] FIC
 ∇
 </pre>
@@ -334,13 +334,13 @@ transposition. Au lieu de faire la totalisation par lignes avec
 «&nbsp;<tt>+⌿</tt>&nbsp;».
 </p>
 
-<h2><a name='equinoxrule∆movingav'><tt>equinoxrule∆movingav</tt></a></h2>
+<h2><a name='eqrule∆movingav'><tt>eqrule∆movingav</tt></a></h2>
 <p>
 Au final, la fonction est donc&nbsp;:
 </p>
 
 <pre>
-∇ R ← P equinoxrule∆movingav V;N;T
+∇ R ← P eqrule∆movingav V;N;T
 N ← (⍴V)[1]
 T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
 R ← (+⌿T) ÷ P
