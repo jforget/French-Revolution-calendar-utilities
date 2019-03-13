@@ -412,6 +412,30 @@ eqrule.apl: apl
     T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
     R ← (+⌿T) ÷ P
     ∇
+- section: eqrule∆fmt
+  eqrule.apl: 5
+  level: 2
+- fr: |
+    Pour mieux lire les valeurs obtenues, il est utile de réarranger les vecteurs
+    en un tableau à 10&nbsp;colonnes et d'inscrire le numéro de la décennie sur une
+    colonne supplémentaire. D'où la fonction suivante. Attention, le numéro de
+    décennie commence à 1, donc ce n'est pas le numéro d'année amputée du chiffre
+    des unités, sauf dans le cas des années se terminant en "0". C'est exactement
+    le même problème que le XX<sup>e</sup> siècle qui va de 1901 à 2000 inclus et
+    le XXI<sup>e</sup> siècle qui commence en 2001.
+- en: |
+    To improve the readability of the computed values, it is better to print them
+    as a 10-column array, with on the left margin the number of the decade (note:
+    decade = 10-year span, this is not the French "<i>décade</i>", which means a
+    10-day span). Beware, this number is not the year number with the unit digit
+    removed (except is this digit is "0"). This is the same question as the fact
+    that the XXth century spans from 1901 to 2000 and the XXIth century begins in
+    2001.
+- code: |
+    ∇ R ← eqrule∆fmt V;N;T
+    N ← ⌊((⍴V)[1] ÷ 10)
+    R ← (⍳N) ,[2] (N, 10)⍴V
+    ∇
 - section: 0
   level: 2
   fr: Utilisation
@@ -463,7 +487,7 @@ eqrule.apl: apl
     With:
 - code: |
     VA ← 400 eqrule∆movingav eqrule∆vnd1ar 'test-6000'
-    (0,⍳559) ,[2] 560 10 ⍴ VA
+    eqrule∆fmt VA
 - fr: |
     on voit que comme attendu, la moyenne glissante est égale à 22,4 pendant
     3600&nbsp;ans puis qu'elle décroît légèrement pour se stabiliser à 21,4 en l'an
@@ -479,23 +503,24 @@ eqrule.apl: apl
     If we go on with:
 - code: |
     VE ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
-    (0,⍳559) ,[2] 560 10 ⍴ 22.4 - VE
+    eqrule∆fmt 22.4 - VE
 - fr: |
     on voit que la dérive atteint 1&nbsp;jour au bout de 1625&nbsp;ans environ
     et qu'au bout de 3197&nbsp;ans elle atteint 2,8&nbsp;jours. L'algorithme
-    ne tient pas la route.
+    ne tient pas la route. Peut-être faudrait-il réessayer avec la version 4
+    de CALENDRICA.
 
     On peut également tester la dérive entre la règle arithmétique et la règle
     des équinoxes avec
 - en: |
     we see that the shift is 1 day after just 1625 years or so and that after 3197
     years, its value reaches 2.8 days. The equinox algorithm does not last this
-    long.
+    long. Maybe I should do the same experiment with version 4 of CALENDRICA.
 
     We can also check the drift between the arithmetic rule and the equinox rule
     with:
 - code: |
-    (0,⍳559) ,[2] 560 10 ⍴ VA - VE
+    eqrule∆fmt VA - VE
 - fr: |
     la conclusion est la même.
 - en: |

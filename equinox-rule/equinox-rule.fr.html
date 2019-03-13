@@ -21,6 +21,7 @@
 <br /><a href='#eqrule∆vnd1ar'><tt>eqrule∆vnd1ar</tt></a>
 <br /><a href='#Calcul des moyennes glissantes'>Calcul des moyennes glissantes</a>
 <br /><a href='#eqrule∆movingav'><tt>eqrule∆movingav</tt></a>
+<br /><a href='#eqrule∆fmt'><tt>eqrule∆fmt</tt></a>
 <br /><a href='#Utilisation'>Utilisation</a>
 <hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
 <h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
@@ -355,6 +356,23 @@ T ← (P,N+1-P) ↑ (P,N+1) ⍴ V
 R ← (+⌿T) ÷ P
 ∇
 </pre>
+<h2><a name='eqrule∆fmt'><tt>eqrule∆fmt</tt></a></h2>
+<p>
+Pour mieux lire les valeurs obtenues, il est utile de réarranger les vecteurs
+en un tableau à 10&nbsp;colonnes et d'inscrire le numéro de la décennie sur une
+colonne supplémentaire. D'où la fonction suivante. Attention, le numéro de
+décennie commence à 1, donc ce n'est pas le numéro d'année amputée du chiffre
+des unités, sauf dans le cas des années se terminant en "0". C'est exactement
+le même problème que le XX<sup>e</sup> siècle qui va de 1901 à 2000 inclus et
+le XXI<sup>e</sup> siècle qui commence en 2001.
+</p>
+
+<pre>
+∇ R ← eqrule∆fmt V;N;T
+N ← ⌊((⍴V)[1] ÷ 10)
+R ← (⍳N) ,[2] (N, 10)⍴V
+∇
+</pre>
 <h2><a name='Utilisation'>Utilisation</a></h2>
 <p>
 Pour examiner la règle des équinoxes, on prendra la liste des
@@ -385,7 +403,7 @@ Avec
 
 <pre>
 VA ← 400 eqrule∆movingav eqrule∆vnd1ar 'test-6000'
-(0,⍳559) ,[2] 560 10 ⍴ VA
+eqrule∆fmt VA
 </pre>
 <p>
 on voit que comme attendu, la moyenne glissante est égale à 22,4 pendant
@@ -398,12 +416,13 @@ Si l'on continue avec
 
 <pre>
 VE ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
-(0,⍳559) ,[2] 560 10 ⍴ 22.4 - VE
+eqrule∆fmt 22.4 - VE
 </pre>
 <p>
 on voit que la dérive atteint 1&nbsp;jour au bout de 1625&nbsp;ans environ
 et qu'au bout de 3197&nbsp;ans elle atteint 2,8&nbsp;jours. L'algorithme
-ne tient pas la route.</p>
+ne tient pas la route. Peut-être faudrait-il réessayer avec la version 4
+de CALENDRICA.</p>
 
 <p>
 On peut également tester la dérive entre la règle arithmétique et la règle
@@ -411,7 +430,7 @@ des équinoxes avec
 </p>
 
 <pre>
-(0,⍳559) ,[2] 560 10 ⍴ VA - VE
+eqrule∆fmt VA - VE
 </pre>
 <p>
 la conclusion est la même.
