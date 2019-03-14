@@ -23,6 +23,7 @@
 <br /><a href='#eqrule∆movingav'><tt>eqrule∆movingav</tt></a>
 <br /><a href='#eqrule∆fmt'><tt>eqrule∆fmt</tt></a>
 <br /><a href='#Usage'>Usage</a>
+<br /><a href='#eqrule∆vnd1th'><tt>eqrule∆vnd1th</tt></a>
 <hr /><h1><a name='Analyzing the equinox rule'>Analyzing the equinox rule</a></h1>
 <h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
 <p>
@@ -414,6 +415,41 @@ eqrule∆fmt VA - VE
 </pre>
 <p>
 the conclusion is the same.    
+</p>
+
+<h2><a name='eqrule∆vnd1th'><tt>eqrule∆vnd1th</tt></a></h2>
+<p>
+As we have seen, the equinox algorithm is not valid over six millenia, but
+with the computations I have executed, I cannot really tell when the validity
+ends. To determine the (approximate) moment when the algorithm is no longer
+valid, I compute a "theoretical 1st Vendémiaire", based on the fact that the
+astronomical year and the Gregorian year diverge at the rate of one day in
+3197 years. And I also use a previous computation, showing that at the
+beginning, the average equinox would occur on "September the 22.4th". All
+numbers are computed with 4 digits after the decimal point, because all
+previous computations have resulted in numbers with no more than 4 digits
+after the decimal point.
+</p>
+
+<pre>
+∇ V ← eqrule∆vnd1th N
+V ← (⌊224000 - (¯1 + ⍳N) × 10000 ÷ 3197) ÷ 10000
+∇
+</pre>
+<p>
+And then, we can subtract there theoretical 1st Vendémiaire from those
+computed by the equinox rule and determine when the difference, or the moving
+average of the differences, is no longer small enough. So we compute:
+</p>
+
+<pre>
+vt ← eqrule∆vnd1th 5601
+ve ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+eqrule∆fmt vt - ve
+</pre>
+
+<p>
+
 </p>
 
 </body>

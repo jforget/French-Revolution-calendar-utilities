@@ -23,6 +23,7 @@
 <br /><a href='#eqrule∆movingav'><tt>eqrule∆movingav</tt></a>
 <br /><a href='#eqrule∆fmt'><tt>eqrule∆fmt</tt></a>
 <br /><a href='#Utilisation'>Utilisation</a>
+<br /><a href='#eqrule∆vnd1th'><tt>eqrule∆vnd1th</tt></a>
 <hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
 <h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
 <p>
@@ -434,6 +435,45 @@ eqrule∆fmt VA - VE
 </pre>
 <p>
 la conclusion est la même.
+</p>
+
+<h2><a name='eqrule∆vnd1th'><tt>eqrule∆vnd1th</tt></a></h2>
+<p>
+On a vu que l'algorithme de calcul des équinoxes ne tient pas la route sur six
+millénaires, mais je ne peux pas vraiment dire quand il commence à diverger.
+Pour déterminer ce moment, on détermine un «&nbsp;1<sup>er</sup> Vendémiaire
+théorique&nbsp;», basé sur le fait que l'année tropique et l'année grégorienne
+divergent d'un jour en 3197&nbsp;ans. Et on se base également sur le résultat
+des calculs ci-dessus montrant qu'au début, le «&nbsp;1<sup>er</sup>
+Vendémiaire moyen&nbsp;» se produit au «&nbsp;22,4&nbsp;» septembre. Les
+nombres obtenus sont calculés avec 4 chiffres après la virgule, «&nbsp;pour
+faire comme les autres&nbsp;».
+</p>
+
+<pre>
+∇ V ← eqrule∆vnd1th N
+V ← (⌊224000 - (¯1 + ⍳N) × 10000 ÷ 3197) ÷ 10000
+∇
+</pre>
+<p>
+Et ensuite, nous pouvons faire la soustraction entre le 1<sup>er</sup>
+Vendémiaire théorique et le 1<sup>er</sup> Vendémiaire calculé par la règle
+des équinoxes. Et nous pourrons alors déterminer le moment où la différence
+des dates, ou la différence des moyennes glissantes, devient suffisamment
+grandes pour ne plus être négligée. Donc, avec&nbsp;:
+</p>
+
+<pre>
+vt ← eqrule∆vnd1th 5601
+ve ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+eqrule∆fmt vt - ve
+</pre>
+
+<p>
+
+ Et nous trouvons que la différence commence par être de l'ordre de 2 dixièmes
+ puis qu'elle diminue en valeur absolue, change de signe, augmente en valeur absolue
+ et retrouve la valeur de 0,2 au bout de 1100 ans environ.
 </p>
 
 </body>
