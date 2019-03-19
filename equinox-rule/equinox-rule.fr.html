@@ -114,7 +114,8 @@ l'usage que vous en ferez.
 <h1><a name='Analyse théorique'>Analyse théorique</a></h1>
 <p>
 Une année astronomique, ou année tropique, dure
-31&nbsp;556&nbsp;925,9747&nbsp;secondes, soit 365,242198781&nbsp;jours, ce qui
+31&nbsp;556&nbsp;925,9747&nbsp;secondes, soit 365,242198781&nbsp;jours (source&nbsp;:
+ma HP-48), ce qui
 nous donne la durée moyenne d'une année républicaine avec la règle des équinoxes.
 Si l'on enlève les 365 jours entiers, il reste 0,242198781&nbsp;jour, soit
 20&nbsp;925,9747 secondes.
@@ -134,9 +135,10 @@ arithmétique en 19&nbsp;524&nbsp;ans et un jour sur l'année grégorienne en
 <h1><a name='Analyse statistique'>Analyse statistique</a></h1>
 <p>
 Comme il est question de durées moyennes, il faudra travailler sur des listes
-suffisamment longues d'années pour déterminer les durées individuelles et faire la
-moyenne. Pour établir la liste, nous commençons par faire tourner <tt>cmpeq.cl</tt> et
-nous stockons le résultat dans un fichier texte. Le contenu est&nbsp;:
+suffisamment longues d'années pour déterminer les durées individuelles et
+faire la moyenne. Pour établir la liste, nous commençons par faire
+tourner <tt>cmpeq.cl</tt> et nous stockons le résultat dans un fichier texte,
+appelons-le <tt>test-6000</tt>. Le contenu est&nbsp;:
 </p>
 
 <pre>
@@ -196,7 +198,8 @@ les moyennes glissantes sur P valeurs successives. Ce qui donnera,
 bien entendu, N+1-P valeurs moyennes.</p>
 
 <p>
-Pour des raisons expliquées ailleurs, on suppose que N vaut 6000 et P vaut 400.</p>
+Pour des raisons expliquées ailleurs, on suppose que N vaut 6000 et P vaut 400.
+Le nombre de valeurs moyennes est donc de 5601.</p>
 
 <p>
 La première étape consiste à arranger les valeurs de V dans le tableau suivant
@@ -340,8 +343,8 @@ V[N+1-P]  V[N+2-P]   V[N+3-P] ... V[N-1]   V[N]
 n'est pas le but ultime du calcul, le but ultime est le vecteur de moyennes
 glissantes. Et il est tout-à-fait possible de calculer ce vecteur de moyennes
 glissantes à partir du précédent tableau intermédiaire, celui d'avant la
-transposition. Au lieu de faire la totalisation par lignes avec
-«&nbsp;<tt>+/</tt>&nbsp;», on fera la totalisation par colonne avec
+transposition. Au lieu de faire la totalisation ligne par ligne avec
+«&nbsp;<tt>+/</tt>&nbsp;», on fera la totalisation colonne par colonne avec
 «&nbsp;<tt>+⌿</tt>&nbsp;».
 </p>
 
@@ -466,14 +469,16 @@ grandes pour ne plus être négligée. Donc, avec&nbsp;:
 <pre>
 vt ← eqrule∆vnd1th 5601
 ve ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+⎕PW ← 120
 eqrule∆fmt vt - ve
 </pre>
 
 <p>
-
- Et nous trouvons que la différence commence par être de l'ordre de 2 dixièmes
- puis qu'elle diminue en valeur absolue, change de signe, augmente en valeur absolue
- et retrouve la valeur de 0,2 au bout de 1100 ans environ.
+Et nous trouvons que la différence commence par être de l'ordre de 2 dixièmes
+puis qu'elle diminue en valeur absolue, change de signe, augmente en valeur
+absolue et retrouve la valeur de 0,2 au bout de 1100 ans environ. Nous
+adopterons donc cette valeur pour la plage de validité de l'algorithme des
+équinoxes.
 </p>
 
 </body>

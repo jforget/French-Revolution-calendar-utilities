@@ -113,7 +113,8 @@ eqrule.apl: apl
   level: 1
 - fr: |
     Une année astronomique, ou année tropique, dure
-    31&nbsp;556&nbsp;925,9747&nbsp;secondes, soit 365,242198781&nbsp;jours, ce qui
+    31&nbsp;556&nbsp;925,9747&nbsp;secondes, soit 365,242198781&nbsp;jours (source&nbsp;:
+    ma HP-48), ce qui
     nous donne la durée moyenne d'une année républicaine avec la règle des équinoxes.
     Si l'on enlève les 365 jours entiers, il reste 0,242198781&nbsp;jour, soit
     20&nbsp;925,9747 secondes.
@@ -129,7 +130,7 @@ eqrule.apl: apl
     3197&nbsp;ans.
 - en: |
     An astronomical year, or a tropical year, lasts
-    31&nbsp;556&nbsp;925.9747&nbsp;seconds, that is 365.242198781&nbsp;days. This gives
+    31&nbsp;556&nbsp;925.9747&nbsp;seconds, that is 365.242198781&nbsp;days (source: my HP-48). This gives
     us the average duration of a French Revolutionary year using the equinox rule.
     If we subtract the 365 whole days, the remainder is 0.242198781&nbsp;day, or
     20&nbsp;925.9747 seconds.
@@ -227,13 +228,17 @@ eqrule.apl: apl
     bien entendu, N+1-P valeurs moyennes.
 
     Pour des raisons expliquées ailleurs, on suppose que N vaut 6000 et P vaut 400.
+    Le nombre de valeurs moyennes est donc de 5601.
 
     La première étape consiste à arranger les valeurs de V dans le tableau suivant
     (N+1-P lignes, P colonnes)&nbsp;:
 - en: |
     So we have a vector V with N numeric values and we want to compute moving
     averages over any P consecutive values. Obviously, we will obtain N+1-P results.
+
     As explained elsewhere, we assume that N is 6000 and P is 400.
+    That gives us 5601 average values.
+
     The first step is storing the values from V in the following table
     (N+1-P lines, P columns):
 - code: |
@@ -392,14 +397,14 @@ eqrule.apl: apl
     n'est pas le but ultime du calcul, le but ultime est le vecteur de moyennes
     glissantes. Et il est tout-à-fait possible de calculer ce vecteur de moyennes
     glissantes à partir du précédent tableau intermédiaire, celui d'avant la
-    transposition. Au lieu de faire la totalisation par lignes avec
-    «&nbsp;<tt>+/</tt>&nbsp;», on fera la totalisation par colonne avec
+    transposition. Au lieu de faire la totalisation ligne par ligne avec
+    «&nbsp;<tt>+/</tt>&nbsp;», on fera la totalisation colonne par colonne avec
     «&nbsp;<tt>+⌿</tt>&nbsp;».
 - en: |
     is not the final step of the computation. The final step of the computation is
     the vector of moving averages and this vector can be computed from the previous
     intermediate array, the one before transposition. Instead of computing the sums
-    by lines with "<tt>+/</tt>", we will compute the sums by column with
+    by lines with "<tt>+/</tt>", we will compute the sums by columns with
     "<tt>+⌿</tt>".
 - section: eqrule∆movingav
   eqrule.apl: 4
