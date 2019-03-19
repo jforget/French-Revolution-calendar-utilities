@@ -567,7 +567,7 @@ eqrule.apl: apl
     Vendémiaire théorique et le 1<sup>er</sup> Vendémiaire calculé par la règle
     des équinoxes. Et nous pourrons alors déterminer le moment où la différence
     des dates, ou la différence des moyennes glissantes, devient suffisamment
-    grandes pour ne plus être négligée. Donc, avec&nbsp;:
+    grande pour ne plus être négligée. Donc, avec&nbsp;:
 - en: |
     And then, we can subtract there theoretical 1st Vendémiaire from those
     computed by the equinox rule and determine when the difference, or the moving
