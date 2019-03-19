@@ -430,8 +430,9 @@ with the computations I have executed, I cannot really tell when the validity
 ends. To determine the (approximate) moment when the algorithm is no longer
 valid, I compute a "theoretical 1st Vendémiaire", based on the fact that the
 astronomical year and the Gregorian year diverge at the rate of one day in
-3197 years. And I also use a previous computation, showing that at the
-beginning, the average equinox would occur on "September the 22.4th". All
+3197 years. And I also use a previous computation, so the moving average for
+the first 400 yers will be similar for the theoretical values computed by this
+function and the real values computed by <tt>cmpeq.cl</tt>. All
 numbers are computed with 4 digits after the decimal point, because all
 previous computations have resulted in numbers with no more than 4 digits
 after the decimal point.
@@ -439,7 +440,7 @@ after the decimal point.
 
 <pre>
 ∇ V ← eqrule∆vnd1th N
-V ← (⌊224000 - (¯1 + ⍳N) × 10000 ÷ 3197) ÷ 10000
+V ← (⌊226600 - (¯1 + ⍳N) × 10000 ÷ 3197) ÷ 10000
 ∇
 </pre>
 <p>
@@ -449,18 +450,12 @@ average of the differences, is no longer small enough. So we compute:
 </p>
 
 <pre>
-vt ← eqrule∆vnd1th 5601
-ve ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
-⎕PW ← 120
-eqrule∆fmt vt - ve
+vt ← eqrule∆vnd1th 6000
+me ← 400 eqrule∆movingav vt
+me ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+⎕PW ← 150
+eqrule∆fmt mt - me
 </pre>
-
-<p>
-And we find that the first value is around 0.2, then it decreases in magnitude,
-changes sign, increase in magnitude and reaches again the 0.2 value more or
-less 1100 years after the beginning. We choose this value for the approximate
-span of the algorithm validity.
-</p>
 
 </body>
 </html>

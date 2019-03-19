@@ -541,8 +541,9 @@ eqrule.apl: apl
     Pour déterminer ce moment, on détermine un «&nbsp;1<sup>er</sup> Vendémiaire
     théorique&nbsp;», basé sur le fait que l'année tropique et l'année grégorienne
     divergent d'un jour en 3197&nbsp;ans. Et on se base également sur le résultat
-    des calculs ci-dessus montrant qu'au début, le «&nbsp;1<sup>er</sup>
-    Vendémiaire moyen&nbsp;» se produit au «&nbsp;22,4&nbsp;» septembre. Les
+    des calculs ci-dessus de façon que la moyenne glissante des 400 premières années
+    soit identique pour les valeurs théoriques calculées par la présente fonction
+    et pour les valeurs réelles calculées par  <tt>cmpeq.cl</tt>. Les
     nombres obtenus sont calculés avec 4 chiffres après la virgule, «&nbsp;pour
     faire comme les autres&nbsp;».
 - en: |
@@ -551,14 +552,15 @@ eqrule.apl: apl
     ends. To determine the (approximate) moment when the algorithm is no longer
     valid, I compute a "theoretical 1st Vendémiaire", based on the fact that the
     astronomical year and the Gregorian year diverge at the rate of one day in
-    3197 years. And I also use a previous computation, showing that at the
-    beginning, the average equinox would occur on "September the 22.4th". All
+    3197 years. And I also use a previous computation, so the moving average for
+    the first 400 yers will be similar for the theoretical values computed by this
+    function and the real values computed by <tt>cmpeq.cl</tt>. All
     numbers are computed with 4 digits after the decimal point, because all
     previous computations have resulted in numbers with no more than 4 digits
     after the decimal point.
 - code: |
     ∇ V ← eqrule∆vnd1th N
-    V ← (⌊224000 - (¯1 + ⍳N) × 10000 ÷ 3197) ÷ 10000
+    V ← (⌊226600 - (¯1 + ⍳N) × 10000 ÷ 3197) ÷ 10000
     ∇
 - fr: |
     Et ensuite, nous pouvons faire la soustraction entre le 1<sup>er</sup>
@@ -572,19 +574,9 @@ eqrule.apl: apl
     average of the differences, is no longer small enough. So we compute:
 - 'en,fr': |
     <pre>
-    vt ← eqrule∆vnd1th 5601
-    ve ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
-    ⎕PW ← 120
-    eqrule∆fmt vt - ve
+    vt ← eqrule∆vnd1th 6000
+    me ← 400 eqrule∆movingav vt
+    me ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+    ⎕PW ← 150
+    eqrule∆fmt mt - me
     </pre>
-- fr: |
-    Et nous trouvons que la différence commence par être de l'ordre de 2 dixièmes
-    puis qu'elle diminue en valeur absolue, change de signe, augmente en valeur
-    absolue et retrouve la valeur de 0,2 au bout de 1100 ans environ. Nous
-    adopterons donc cette valeur pour la plage de validité de l'algorithme des
-    équinoxes.
-- en: |
-    And we find that the first value is around 0.2, then it decreases in magnitude,
-    changes sign, increase in magnitude and reaches again the 0.2 value more or
-    less 1100 years after the beginning. We choose this value for the approximate
-    span of the algorithm validity.
