@@ -1,6 +1,7 @@
 fr: Analyse de la règle des équinoxes
 en: Analyzing the equinox rule
 eqrule.apl: apl
+diagram1.sh: apl
 ---
 - section: eqrule∆license
   eqrule.apl: 1
@@ -580,3 +581,71 @@ eqrule.apl: apl
     ⎕PW ← 150
     eqrule∆fmt mt - me
     </pre>
+- section: 0
+  fr: Graphisme
+  en: Graphism
+  level: 1
+- section: diagram1.sh
+  diagram1.sh: 1
+  level: 2
+- fr: |
+    D'après la documentation de GNU-APL, il est possible de construire des diagrammes
+    avec les vecteurs calculés dans un programme. Mais cela ne fonctionne pas sur
+    l'interpréteur sur ma machine et qui provient d'un paquet pour Ubuntu 18.04.
+    Peut-être faudrait-il que je charge les sources et que je compile un nouvel
+    interpréteur avec toutes les options intéressantes. En attendant, voici un script
+    shell qui appelle gnuplot pour générer un diagramme représentant la lente dérive
+    des 1<sup>er</sup> Vendémiaire avec la règle arithmétique et avec la règle des
+    équinoxes.
+- en: |
+    According to GNU-APL's documentation, we can plot diagrams with the vectors
+    computed in our APL programs. This does not work with the APL interpreter on my
+    computer (downloaded from an Ubuntu 18.04 Bionic Beaver repo). Maybe I should
+    download the sources for GNU-APL and compile a new interpreter with all the
+    interesting options. Meanwhile, here is a shell script to run gnuplot and plot a
+    diagram showing how the 1st Vendémiaire drift year after year, computed with
+    either the equinox rule or the arithmetic rule.
+- code: |
+    #!/bin/sh
+    # -*- encoding: utf-8; indent-tabs-mode: nil -*-
+    #
+    # Plotting the drift of 1st Vendémiaire when computed by the astronomical and arithmetic algorithms
+    # Représentation graphique de la dérive du 1er Vendémiaire calculé par les algorithme astronomique et arithmétique
+    #
+    # Copyright (C) 2019, Jean Forget
+    #
+    # Author: Jean Forget
+    # Maintainer: Jean Forget
+    # Keywords: French Revolution, calendar
+    #
+    # This program is free software; you can redistribute it and modify
+    # it under the terms of Perl:
+    # -- either the GNU General Public License as published by
+    #    the Free Software Foundation; version 1, or (at your option)
+    #    any later version,
+    # -- or the Artistic License.
+    #
+    # This program is distributed in the hope that it will be useful,
+    # but WITHOUT ANY WARRANTY; without even the implied warranty of
+    # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    # GNU General Public License for more details.
+    #
+    # You should have received a copy of the GNU General Public License
+    # along with GNU Emacs; see the file COPYING. If not, see <https://www.gnu.org/licenses/>.
+
+     
+    export racine=$1
+    gnuplot <<EOF > $racine.png
+    set terminal png
+    plot '$racine' using 1:3 with lines, '$racine' using 1:4 with lines
+    EOF
+    display $racine.png
+- fr: |
+    Le script peut être appelé avec en paramètre le nom du fichier où est stockée la
+    sortie directe de <tt>cmpeq.cl</tt> (donc sans aucune intervention d'APL). Le
+    résultat est assez peu lisible.
+- en: |
+    This script can be called with a parameter giving the name of the file where the
+    output of <tt>cmpeq.cl</tt> (with no APL process). The result is not very
+    readable.
+    
