@@ -25,6 +25,8 @@
 <br /><a href='#Utilisation'>Utilisation</a>
 <br /><a href='#eqrule∆vnd1th'><tt>eqrule∆vnd1th</tt></a>
 <br /><a href='#Graphisme'>Graphisme</a>
+<br /><a href='#diagram0.sh'><tt>diagram0.sh</tt></a>
+<br /><a href='#eqrule∆diag1'><tt>eqrule∆diag1</tt></a>
 <br /><a href='#diagram1.sh'><tt>diagram1.sh</tt></a>
 <hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
 <h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
@@ -478,7 +480,7 @@ eqrule∆fmt mt - me
 </pre>
 
 <h1><a name='Graphisme'>Graphisme</a></h1>
-<h2><a name='diagram1.sh'><tt>diagram1.sh</tt></a></h2>
+<h2><a name='diagram0.sh'><tt>diagram0.sh</tt></a></h2>
 <p>
 D'après la documentation de GNU-APL, il est possible de construire des diagrammes
 avec les vecteurs calculés dans un programme. Mais cela ne fonctionne pas sur
@@ -495,7 +497,7 @@ des 1<sup>er</sup> Vendémiaire avec la règle arithmétique et avec la règle d
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 # Plotting the drift of 1st Vendémiaire when computed by the astronomical and arithmetic algorithms
-# Représentation graphique de la dérive du 1er Vendémiaire calculé par les algorithme astronomique et arithmétique
+# Représentation graphique de la dérive du 1er Vendémiaire calculé par les algorithmes astronomique et arithmétique
 #
 # Copyright (C) 2019, Jean Forget
 #
@@ -518,7 +520,12 @@ des 1<sup>er</sup> Vendémiaire avec la règle arithmétique et avec la règle d
 # You should have received a copy of the GNU General Public License
 # along with GNU Emacs; see the file COPYING. If not, see &lt;https://www.gnu.org/licenses/&gt;.
 
- 
+if [ $# -eq 0 ]
+then
+   echo "usage $0 input_file"
+   exit
+fi
+
 export racine=$1
 gnuplot &lt;&lt;EOF &gt; $racine.png
 set terminal png
@@ -527,10 +534,89 @@ EOF
 display $racine.png
 </pre>
 <p>
-Le script peut être appelé avec en paramètre le nom du fichier où est stockée la
+Le script est appelé avec en paramètre le nom du fichier où est stockée la
 sortie directe de <tt>cmpeq.cl</tt> (donc sans aucune intervention d'APL). Le
 résultat est assez peu lisible.
 </p>
 
+<h2><a name='eqrule∆diag1'><tt>eqrule∆diag1</tt></a></h2>
+<p>
+On fait le même gene de graphique avec non pas les valeurs année après année
+du 1<sup>er</sup>i Vendémiaire, mais avec sa moyenne glissante sur 400&nbsp;ans.
+On y ajoute la fonction linéaire qui détermine l'allure générale de cette
+moyenne glissante.
+</p>
+
+<pre>
+∇ eqrule∆diag1 FIC
+ve ← eqrule∆vnd1eq FIC
+va ← eqrule∆vnd1ar FIC
+vt ← eqrule∆vnd1th ⍴ ve
+me ← 400 eqrule∆movingav ve
+ma ← 400 eqrule∆movingav va
+mt ← 400 eqrule∆movingav vt
+an ← ⍳⍴me
+tab ← an , (an + 1791) , me , ma ,[1.5] mt
+tab
+∇
+</pre>
+<h2><a name='diagram1.sh'><tt>diagram1.sh</tt></a></h2>
+<p>
+De même que <tt>⎕PLOT</tt> ne fonctionne pas sur mon interpréteur, l'écriture
+de fichier par <tt>⎕FIO[56]</tt> ne fonctionne pas non plus. J'ai donc recours
+à la méthode Unix habituelle, la redirection de la sortie standard.
+</p>
+
+<pre>
+#!/bin/sh
+# -*- encoding: utf-8; indent-tabs-mode: nil -*-
+#
+# Plotting the drift of moving average 1st Vendémiaire when computed by the astronomical
+# and arithmetic algorithms and by the theoretical linear function
+# Représentation graphique de la dérive du 1er Vendémiaire en moyenne glissante calculé
+# par les algorithmes astronomique et arithmétique et par la fonction linéaire théorique
+#
+# Copyright (C) 2019, Jean Forget
+#
+# Author: Jean Forget
+# Maintainer: Jean Forget
+# Keywords: French Revolution, calendar
+#
+# This program is free software; you can redistribute it and modify
+# it under the terms of Perl:
+# -- either the GNU General Public License as published by
+#    the Free Software Foundation; version 1, or (at your option)
+#    any later version,
+# -- or the Artistic License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Emacs; see the file COPYING. If not, see &lt;https://www.gnu.org/licenses/&gt;.
+
+if [ $# -eq 0 ]
+then
+   echo "usage $0 input_file"
+   exit
+fi
+
+export racine=$1
+export result=$1-diag1
+
+apl --script -f eqrule.apl &lt;&lt;EOF &gt; $result
+eqrule∆diag1 '$racine'
+)off
+EOF
+
+gnuplot &lt;&lt;EOF &gt; $result.png
+set terminal png
+plot '$result' using 1:3 with lines, '$result' using 1:4 with lines, '$result' using 1:5 with lines
+EOF
+
+display $result.png
+</pre>
 </body>
 </html>
