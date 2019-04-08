@@ -28,6 +28,7 @@
 <br /><a href='#diagram0.sh'><tt>diagram0.sh</tt></a>
 <br /><a href='#eqrule∆diag1'><tt>eqrule∆diag1</tt></a>
 <br /><a href='#diagram1.sh'><tt>diagram1.sh</tt></a>
+<br /><a href='#Conclusion'>Conclusion</a>
 <hr /><h1><a name='Analyzing the equinox rule'>Analyzing the equinox rule</a></h1>
 <h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
 <p>
@@ -465,12 +466,12 @@ eqrule∆fmt mt - me
 <h2><a name='diagram0.sh'><tt>diagram0.sh</tt></a></h2>
 <p>
 According to GNU-APL's documentation, we can plot diagrams with the vectors
-computed in our APL programs. This does not work with the APL interpreter on my
-computer (downloaded from an Ubuntu 18.04 Bionic Beaver repo). Maybe I should
-download the sources for GNU-APL and compile a new interpreter with all the
-interesting options. Meanwhile, here is a shell script to run gnuplot and plot a
-diagram showing how the 1st Vendémiaire drift year after year, computed with
-either the equinox rule or the arithmetic rule.
+computed in our APL programs with the <tt>⎕PLOT</tt> function. This does not work
+with the APL interpreter on my computer (downloaded from an Ubuntu 18.04 Bionic
+Beaver repo). Maybe I should download the sources for GNU-APL and compile a new
+interpreter with all the interesting options. Meanwhile, here is a shell script
+to run gnuplot and plot a diagram showing how the 1st Vendémiaire drift year
+after year, computed with either the equinox rule or the arithmetic rule.
 </p>
 
 <pre>
@@ -499,7 +500,7 @@ either the equinox rule or the arithmetic rule.
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with GNU Emacs; see the file COPYING. If not, see &lt;https://www.gnu.org/licenses/&gt;.
+# see the file LICENSE. If not, see &lt;https://www.gnu.org/licenses/&gt;.
 
 if [ $# -eq 0 ]
 then
@@ -575,8 +576,8 @@ Unix method, piping the standard output.
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with GNU Emacs; see the file COPYING. If not, see &lt;https://www.gnu.org/licenses/&gt;.
+# You should have received a copy of the GNU General Public License;
+# see the file LICENSE. If not, see &lt;https://www.gnu.org/licenses/&gt;.
 
 if [ $# -eq 0 ]
 then
@@ -599,5 +600,15 @@ EOF
 
 display $result.png
 </pre>
+<h2><a name='Conclusion'>Conclusion</a></h2>
+<p>
+As we can see on the generated plot, the curve of the <tt>cmpeq.cl</tt> results
+and the linear theoretical curve are tangent at first, but they diverge very
+soon. That means that errors are more and more frequent as time goes by. We will
+adopt a 1000-year threshold for the equinox computations, while keeping in mind
+that errors happen before this threshold. The real meaning of this
+rule-of-the-thumb threshold is the limit when the errors are too much frequent.
+</p>
+
 </body>
 </html>

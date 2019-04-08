@@ -28,6 +28,7 @@
 <br /><a href='#diagram0.sh'><tt>diagram0.sh</tt></a>
 <br /><a href='#eqrule∆diag1'><tt>eqrule∆diag1</tt></a>
 <br /><a href='#diagram1.sh'><tt>diagram1.sh</tt></a>
+<br /><a href='#Conclusion'>Conclusion</a>
 <hr /><h1><a name='Analyse de la règle des équinoxes'>Analyse de la règle des équinoxes</a></h1>
 <h2><a name='eqrule∆license'><tt>eqrule∆license</tt></a></h2>
 <p>
@@ -405,7 +406,7 @@ décroît lègèrement de l'an 3601 à l'an 4000 et elle est de nouveau constant
 partir de 4001. Pour la version équinoxe du calendrier républicain, il y aura quand
 même des fluctuations. Ces fluctuations seront nettement moindres pour la moyenne
 glissante que pour les données de base, mais elles existent quand même. À ces
-fluctuations doivent s'ajouter une dérive d'une journée en 3197 à 4000&nbsp;ans.
+fluctuations doit s'ajouter une dérive d'une journée en 3197 à 4000&nbsp;ans.
 Avec
 </p>
 
@@ -468,7 +469,7 @@ Et ensuite, nous pouvons faire la soustraction entre le 1<sup>er</sup>
 Vendémiaire théorique et le 1<sup>er</sup> Vendémiaire calculé par la règle
 des équinoxes. Et nous pourrons alors déterminer le moment où la différence
 des dates, ou la différence des moyennes glissantes, devient suffisamment
-grande pour ne plus être négligée. Donc, avec&nbsp;:
+grande pour ne plus être négligée. Cela se calcule avec&nbsp;:
 </p>
 
 <pre>
@@ -483,13 +484,13 @@ eqrule∆fmt mt - me
 <h2><a name='diagram0.sh'><tt>diagram0.sh</tt></a></h2>
 <p>
 D'après la documentation de GNU-APL, il est possible de construire des diagrammes
-avec les vecteurs calculés dans un programme. Mais cela ne fonctionne pas sur
-l'interpréteur sur ma machine et qui provient d'un paquet pour Ubuntu 18.04.
-Peut-être faudrait-il que je charge les sources et que je compile un nouvel
-interpréteur avec toutes les options intéressantes. En attendant, voici un script
-shell qui appelle gnuplot pour générer un diagramme représentant la lente dérive
-des 1<sup>er</sup> Vendémiaire avec la règle arithmétique et avec la règle des
-équinoxes.
+avec les vecteurs calculés dans un programme en utilisant la fonction
+<tt>⎕PLOT</tt>. Mais cela ne fonctionne pas sur l'interpréteur sur ma machine et
+qui provient d'un paquet pour Ubuntu 18.04. Peut-être faudrait-il que je charge
+les sources et que je compile un nouvel interpréteur avec toutes les options
+intéressantes. En attendant, voici un script shell qui appelle gnuplot pour
+générer un diagramme représentant la lente dérive des 1<sup>er</sup> Vendémiaire
+avec la règle arithmétique et avec la règle des équinoxes.
 </p>
 
 <pre>
@@ -518,7 +519,7 @@ des 1<sup>er</sup> Vendémiaire avec la règle arithmétique et avec la règle d
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with GNU Emacs; see the file COPYING. If not, see &lt;https://www.gnu.org/licenses/&gt;.
+# see the file LICENSE. If not, see &lt;https://www.gnu.org/licenses/&gt;.
 
 if [ $# -eq 0 ]
 then
@@ -594,8 +595,8 @@ de fichier par <tt>⎕FIO[56]</tt> ne fonctionne pas non plus. J'ai donc recours
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with GNU Emacs; see the file COPYING. If not, see &lt;https://www.gnu.org/licenses/&gt;.
+# You should have received a copy of the GNU General Public License;
+# see the file LICENSE. If not, see &lt;https://www.gnu.org/licenses/&gt;.
 
 if [ $# -eq 0 ]
 then
@@ -618,5 +619,16 @@ EOF
 
 display $result.png
 </pre>
+<h2><a name='Conclusion'>Conclusion</a></h2>
+<p>
+Comme on peut le voir dans le diagramme, la courbe des équinoxes calculés
+par <tt>cmpeq.cl</tt> et la courbe théorique sont tangentes à l'origine, mais elles
+divergent très rapidement. Ce qui signifie que les erreurs sont de plus en plus
+nombreuses au fil du temps. On se limitera donc à 1000&nbsp;ans pour le calcul des
+équinoxes, en gardant à l'esprit que les erreurs pourront exister avant cette date.
+La limite pifométrique de 1000&nbsp;ans correspond au moment où ces erreurs sont
+trop nombreuses.
+</p>
+
 </body>
 </html>
