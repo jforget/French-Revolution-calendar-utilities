@@ -411,8 +411,8 @@ Avec
 </p>
 
 <pre>
-VA ← 400 eqrule∆movingav eqrule∆vnd1ar 'test-6000'
-eqrule∆fmt VA
+VA ← 400 <a href='#eqrule∆movingav' class='call'>eqrule∆movingav</a> <a href='#eqrule∆vnd1ar' class='call'>eqrule∆vnd1ar</a> 'test-6000'
+<a href='#eqrule∆fmt' class='call'>eqrule∆fmt</a> VA
 </pre>
 <p>
 on voit que comme attendu, la moyenne glissante est égale à 22,4 pendant
@@ -424,8 +424,8 @@ Si l'on continue avec
 </p>
 
 <pre>
-VE ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
-eqrule∆fmt 22.4 - VE
+VE ← 400 <a href='#eqrule∆movingav' class='call'>eqrule∆movingav</a> <a href='#eqrule∆vnd1eq' class='call'>eqrule∆vnd1eq</a> 'test-6000'
+<a href='#eqrule∆fmt' class='call'>eqrule∆fmt</a> 22.4 - VE
 </pre>
 <p>
 on voit que la dérive atteint 1&nbsp;jour au bout de 1625&nbsp;ans environ
@@ -439,7 +439,7 @@ des équinoxes avec
 </p>
 
 <pre>
-eqrule∆fmt VA - VE
+<a href='#eqrule∆fmt' class='call'>eqrule∆fmt</a> VA - VE
 </pre>
 <p>
 la conclusion est la même.
@@ -473,11 +473,11 @@ grande pour ne plus être négligée. Cela se calcule avec&nbsp;:
 </p>
 
 <pre>
-vt ← eqrule∆vnd1th 6000
-mt ← 400 eqrule∆movingav vt
-me ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+vt ← <a href='#eqrule∆vnd1th' class='call'>eqrule∆vnd1th</a> 6000
+mt ← 400 <a href='#eqrule∆movingav' class='call'>eqrule∆movingav</a> vt
+me ← 400 <a href='#eqrule∆movingav' class='call'>eqrule∆movingav</a> <a href='#eqrule∆vnd1eq' class='call'>eqrule∆vnd1eq</a> 'test-6000'
 ⎕PW ← 150
-eqrule∆fmt mt - me
+<a href='#eqrule∆fmt' class='call'>eqrule∆fmt</a> mt - me
 </pre>
 
 <h1><a name='Graphisme'>Graphisme</a></h1>
@@ -550,12 +550,12 @@ moyenne glissante.
 
 <pre>
 ∇ eqrule∆diag1 FIC
-ve ← eqrule∆vnd1eq FIC
-va ← eqrule∆vnd1ar FIC
-vt ← eqrule∆vnd1th ⍴ ve
-me ← 400 eqrule∆movingav ve
-ma ← 400 eqrule∆movingav va
-mt ← 400 eqrule∆movingav vt
+ve ← <a href='#eqrule∆vnd1eq' class='call'>eqrule∆vnd1eq</a> FIC
+va ← <a href='#eqrule∆vnd1ar' class='call'>eqrule∆vnd1ar</a> FIC
+vt ← <a href='#eqrule∆vnd1th' class='call'>eqrule∆vnd1th</a> ⍴ ve
+me ← 400 <a href='#eqrule∆movingav' class='call'>eqrule∆movingav</a> ve
+ma ← 400 <a href='#eqrule∆movingav' class='call'>eqrule∆movingav</a> va
+mt ← 400 <a href='#eqrule∆movingav' class='call'>eqrule∆movingav</a> vt
 an ← ⍳⍴me
 tab ← an , (an + 1791) , me , ma ,[1.5] mt
 tab
@@ -608,7 +608,7 @@ export racine=$1
 export result=$1-diag1
 
 apl --script -f eqrule.apl &lt;&lt;EOF &gt; $result
-eqrule∆diag1 '$racine'
+<a href='#eqrule∆diag1' class='call'>eqrule∆diag1</a> '$racine'
 )off
 EOF
 

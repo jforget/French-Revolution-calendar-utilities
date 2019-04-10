@@ -1,8 +1,8 @@
 fr: Analyse de la règle des équinoxes
 en: Analyzing the equinox rule
 eqrule.apl: apl
-diagram0.sh: apl
-diagram1.sh: apl
+diagram0.sh: shell
+diagram1.sh: shell
 ---
 - section: eqrule∆license
   eqrule.apl: 1
@@ -495,8 +495,8 @@ diagram1.sh: apl
 
     With:
 - code: |
-    VA ← 400 eqrule∆movingav eqrule∆vnd1ar 'test-6000'
-    eqrule∆fmt VA
+    VA ← 400 @eqrule∆movingav@ @eqrule∆vnd1ar@ 'test-6000'
+    @eqrule∆fmt@ VA
 - fr: |
     on voit que comme attendu, la moyenne glissante est égale à 22,4 pendant
     3600&nbsp;ans puis qu'elle décroît légèrement pour se stabiliser à 21,4 en l'an
@@ -511,8 +511,8 @@ diagram1.sh: apl
 
     If we go on with:
 - code: |
-    VE ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
-    eqrule∆fmt 22.4 - VE
+    VE ← 400 @eqrule∆movingav@ @eqrule∆vnd1eq@ 'test-6000'
+    @eqrule∆fmt@ 22.4 - VE
 - fr: |
     on voit que la dérive atteint 1&nbsp;jour au bout de 1625&nbsp;ans environ
     et qu'au bout de 3197&nbsp;ans elle atteint 2,8&nbsp;jours. L'algorithme
@@ -529,7 +529,7 @@ diagram1.sh: apl
     We can also check the drift between the arithmetic rule and the equinox rule
     with:
 - code: |
-    eqrule∆fmt VA - VE
+    @eqrule∆fmt@ VA - VE
 - fr: |
     la conclusion est la même.
 - en: |
@@ -576,11 +576,11 @@ diagram1.sh: apl
     average of the differences, is no longer small enough. So we compute:
 - 'en,fr': |
     <pre>
-    vt ← eqrule∆vnd1th 6000
-    mt ← 400 eqrule∆movingav vt
-    me ← 400 eqrule∆movingav eqrule∆vnd1eq 'test-6000'
+    vt ← @eqrule∆vnd1th@ 6000
+    mt ← 400 @eqrule∆movingav@ vt
+    me ← 400 @eqrule∆movingav@ @eqrule∆vnd1eq@ 'test-6000'
     ⎕PW ← 150
-    eqrule∆fmt mt - me
+    @eqrule∆fmt@ mt - me
     </pre>
 - section: 0
   fr: Graphisme
@@ -669,12 +669,12 @@ diagram1.sh: apl
     meant to give the overall look of the plot.
 - code: |
     ∇ eqrule∆diag1 FIC
-    ve ← eqrule∆vnd1eq FIC
-    va ← eqrule∆vnd1ar FIC
-    vt ← eqrule∆vnd1th ⍴ ve
-    me ← 400 eqrule∆movingav ve
-    ma ← 400 eqrule∆movingav va
-    mt ← 400 eqrule∆movingav vt
+    ve ← @eqrule∆vnd1eq@ FIC
+    va ← @eqrule∆vnd1ar@ FIC
+    vt ← @eqrule∆vnd1th@ ⍴ ve
+    me ← 400 @eqrule∆movingav@ ve
+    ma ← 400 @eqrule∆movingav@ va
+    mt ← 400 @eqrule∆movingav@ vt
     an ← ⍳⍴me
     tab ← an , (an + 1791) , me , ma ,[1.5] mt
     tab
@@ -730,7 +730,7 @@ diagram1.sh: apl
     export result=$1-diag1
 
     apl --script -f eqrule.apl <<EOF > $result
-    eqrule∆diag1 '$racine'
+    @eqrule∆diag1@ '$racine'
     )off
     EOF
 
