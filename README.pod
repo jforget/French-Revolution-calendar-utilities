@@ -22,9 +22,8 @@ be written in the program's documentation.
 Use C<perlpod> I<program-name> and look
 at the I<DEPENDENCIES> paragraph.
 
-As for C-Lisp programs, a prerequisite is the
-installation of F<calendrica-3.0.cl>. See the
-comments inside the source files.
+As for  Common Lisp  programs, a prerequisite  is the  installation of
+F<calendrica-3.0.cl>. See the comments inside the source files.
 
 =head1 gen-tests
 

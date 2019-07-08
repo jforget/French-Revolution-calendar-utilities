@@ -23,7 +23,8 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with GNU Emacs; see the file COPYING. If not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, check the website of the Free Software
+# Foundation, Inc., <https://www.fsf.org/>.
 
 use utf8;
 use v5.10;
@@ -83,6 +84,7 @@ if ($lang eq 'text') {
     }
   }
 }
+
 if ($lang eq 'pascal') {
   for my $modulo (0..3) {
     say "   $modulo: begin";
@@ -124,14 +126,14 @@ __END__
 
 =head1 NAME / NOM
 
-gen-astro-tests -- a program to generate some Pascal code for the equinox rule
+gen-astro-code -- a program to generate some Pascal code for the equinox rule
 
-gen-astro-tests -- un programme pour générer une partie du code Pascal pour la règle des équinoxes
+gen-astro-code -- un programme pour générer une partie du code Pascal pour la règle des équinoxes
 
 =head1 UTILISATION
 
-  gen-feasts --lang=text   --nb=20
-  gen-feasts --lang=pascal --nb=20
+  gen-astro-code --lang=text   --nb=20
+  gen-astro-code --lang=pascal --nb=6000
 
 =head1 CALL PARAMETERS / PARAMÈTRES D'APPEL
 

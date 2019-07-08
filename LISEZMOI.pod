@@ -23,10 +23,8 @@ chose, cela sera marqué dans sa documentation.
 Utilisez C<perlpod> I<nom-du-programme> 
 et lisez le paragraphe I<DEPENDANCES>.
 
-Quant aux programmes C-Lisp, ils ont pour
-prérequis l'installation du programme
-F<calendrica-3.0.cl>. Voir les commentaires
-des programmes.
+Quant  aux programmes  Common Lisp,  ils requièrent  l'installation du
+programme F<calendrica-3.0.cl>. Voir les commentaires des programmes.
 
 =head1 gen-tests
 

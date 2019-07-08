@@ -21,19 +21,21 @@
 ; GNU General Public License for more details.
 ;
 ; You should have received a copy of the GNU General Public License
-; along with GNU Emacs; see the file COPYING. If not, see <https://www.gnu.org/licenses/>.
+; along with this program; if not, check the website of the Free Software
+; Foundation, Inc., <https://www.fsf.org/>.
 ;
 ; This program relies upon another program by E. M. Reingold and N. Dershowitz,
-; "calendrica-3.0.cl".
-;
-; See the license terms of "calendrica-3.0.cl" in this file, available in the "resources" tab of
-; https://www.cambridge.org/ch/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition#resources#e2jTvv2OqgtTRWik.97
-; also available at
+; "calendrica-3.0.cl" available at
 ; https://github.com/espinielli/pycalcal
 ;
+; See the license terms of "calendrica-3.0.cl" within the source file.
+;
+; The new version, published with the 4th edition of "Calendrical Calculations", is available in the "resources" tab of
+; https://www.cambridge.org/ch/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-ultimate-edition-4th-edition?format=PB&isbn=9781107683167#resources#e2jTvv2OqgtTRWik.97
+;
 
 
-(load "/home/jf/Documents/prog/clisp/calendrica-3.0.cl")
+(load "/home/jf/Documents/prog/lisp/calendrica-3.0.cl")
 
 (defun comp-eq-arith (annee)
   (let* ((date-equ   (cc3:gregorian-from-fixed (cc3:fixed-from-french            (list annee 1 1))))
