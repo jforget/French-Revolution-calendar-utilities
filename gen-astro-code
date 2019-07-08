@@ -40,7 +40,7 @@ Getopt::Long::GetOptions('lang:s'  => \$lang,
                          'nb:i'    => \$nb,
     ) or die "Problème avec les options";
 $lang = lc($lang);
-if ($lang ne 'pascal' && $lang ne 'text') {
+if ($lang ne 'pascal' && $lang ne 'text' && $lang ne 'perl6') {
   die "Unknown language: '$lang'";
 }
 
@@ -120,6 +120,41 @@ if ($lang eq 'pascal') {
   }
 }
 
+if ($lang eq 'perl6') {
+  for my $modulo (0..3) {
+    say ' ' x 6, "when $modulo {";
+    my @years;
+    my @itvls;
+    my ($day_max, $years_max, $itvl_max) = (0) x 3;
+    for my $itvl (@{$result[$modulo]}) {
+       my $val = $itvl->{val};
+       $years[$val] += 1 + ($itvl->{end} - $itvl->{begin}) / 4;
+       $itvls[$val] ++;
+       if ($itvls[$val] > $itvl_max || ($itvls[$val] == $itvl_max && $years[$val] > $years_max)) {
+         $day_max   = $val;
+         $years_max = $years[$val];
+         $itvl_max  = $itvls[$val];
+       }
+    }
+    say ' ' x 8, '$result = ', $day_max, ';';
+    say ' ' x 8, 'given $year-gr {';
+    my $else = '';
+    for my $itvl (@{$result[$modulo]}) {
+      my $day = $itvl->{val};
+      if ($day != $day_max) {
+        if ($itvl->{begin} == $itvl->{end}) {
+          say ' ' x 10, "when ", $itvl->{begin}, "       { \$result = $day }";
+        }
+        else {
+          say ' ' x 10, "when ", $itvl->{begin}, '..', $itvl->{end}, " { \$result = $day }";
+        }
+      }
+    }
+    say '        }';
+    say '      }';
+  }
+}
+
 __END__ 
 
 =encoding utf8
@@ -141,12 +176,14 @@ gen-astro-code -- un programme pour générer une partie du code Pascal pour la 
 
 =item lang
 
-Target language. For the moment, the only accepted language is Pascal.
-Or you can print the list of intervals as text.
+Target language. For the moment, the only accepted language are Pascal
+and Perl6 (with no  space). Or you can print the  list of intervals as
+text by asking for language C<text>.
 
-Langage de destination. Pour l'instant, seul Pascal est accepté. Vous
-pouvez également obtenir la liste des intervalles sous forme de texte
-simple.
+Langage de  destination. Pour l'instant,  seul Pascal et  Perl6 (écrit
+sans espace) sont acceptés. Vous pouvez également obtenir la liste des
+intervalles  sous  forme  de  texte simple  en  demandant  le  langage
+C<text>.
 
 =item nb
 
@@ -192,11 +229,15 @@ Aucune incompatibilité identifiée.
 
 =head1 BUGS AND LIMITS
 
-No known bugs in this script.
+The script gives  slightly different results when  calling C<clisp> or
+C<gcl>  to  compute  the  autumn  equinox  value.  Need  some  further
+analysis.
 
 =head1 BOGUES ET LIMITES
 
-Aucune erreur identifiée dans ce script.
+Ce  programme  donne  des  résultats  légèrements  différents  lorsque
+l'interpréteur Common Lisp  appelé est C<clisp> ou  C<gcl>. À regarder
+de plus près.
 
 =head1 AUTHOR / AUTEUR
 

@@ -39,52 +39,66 @@ Getopt::Long::GetOptions('lang:s'  => \$lang,
                          'nb:i'    => \$nb,
     ) or die "Problème avec les options";
 $lang = lc($lang);
-if ($lang ne 'pascal') {
+if ($lang ne 'pascal' && $lang ne 'perl6') {
   die "Unknown language: '$lang'";
 }
 
 my $lisp ="/usr/bin/clisp";
 my $pgl  ="cmpeq.cl";
-
-my $ent1 = 'entree-astro-rg';
-my $ent2 = 'entree-astro-gr';
-my $sor1 = 'sortie-astro-rg';
-my $sor2 = 'sortie-astro-gr';
-
-open my $e1, '>', $ent1
-  or die "ouverture $ent1 $!";
-open my $e2, '>', $ent2
-  or die "ouverture $ent2 $!";
-open my $s1, '>:encoding(UTF-8)', $sor1
-  or die "ouverture $sor1 $!";
-open my $s2, '>:encoding(UTF-8)', $sor2
-  or die "ouverture $sor2 $!";
-
-print $e1 "5\n";
-print $e2 "5\n";
-for (1..$nb) {
-  print $e1 "2\n1 1 $_\n";
-}
 my @lignes = qx/$lisp $pgl $nb/;
-for (@lignes) {
-  my ($re_y, $gr_y, $equi_d, $arit_d) = $_ =~ /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
-  print $e2 "3\n$equi_d 9 $gr_y\n";
-  my $date_gr = DateTime                               ->new(year => $gr_y, month => 9, day => $equi_d, locale => 'fr');
-  my $date_re = DateTime::Calendar::FrenchRevolutionary->new(year => $re_y, month => 1, day =>       1, locale => 'fr');
-  my $ch_gr   = $date_gr->strftime("%A %e %B %Y");
-  my $ch_re   = $date_re->strftime("%A %e %B %EY, %Ej");
-  print $s1 "$ch_re\n$ch_gr\n";
-  print $s2 "$ch_gr\n$ch_re\n";
+
+if ($lang eq 'pascal') {
+  my $ent1 = 'entree-astro-rg';
+  my $ent2 = 'entree-astro-gr';
+  my $sor1 = 'sortie-astro-rg';
+  my $sor2 = 'sortie-astro-gr';
+
+  open my $e1, '>', $ent1
+    or die "ouverture $ent1 $!";
+  open my $e2, '>', $ent2
+    or die "ouverture $ent2 $!";
+  open my $s1, '>:encoding(UTF-8)', $sor1
+    or die "ouverture $sor1 $!";
+  open my $s2, '>:encoding(UTF-8)', $sor2
+    or die "ouverture $sor2 $!";
+
+  print $e1 "5\n";
+  print $e2 "5\n";
+  for (1..$nb) {
+    print $e1 "2\n1 1 $_\n";
+  }
+  for (@lignes) {
+    my ($re_y, $gr_y, $equi_d, $arit_d) = $_ =~ /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
+    print $e2 "3\n$equi_d 9 $gr_y\n";
+    my $date_gr = DateTime                               ->new(year => $gr_y, month => 9, day => $equi_d, locale => 'fr');
+    my $date_re = DateTime::Calendar::FrenchRevolutionary->new(year => $re_y, month => 1, day =>       1, locale => 'fr');
+    my $ch_gr   = $date_gr->strftime("%A %e %B %Y");
+    my $ch_re   = $date_re->strftime("%A %e %B %EY, %Ej");
+    print $s1 "$ch_re\n$ch_gr\n";
+    print $s2 "$ch_gr\n$ch_re\n";
+  }
+
+  close $e1
+    or die "fermeture $ent1 $!";
+  close $e2
+    or die "fermeture $ent2 $!";
+  close $s1
+    or die "fermeture $sor1 $!";
+  close $s2
+    or die "fermeture $sor2 $!";
 }
 
-close $e1
-  or die "fermeture $ent1 $!";
-close $e2
-  or die "fermeture $ent2 $!";
-close $s1
-  or die "fermeture $sor1 $!";
-close $s2
-  or die "fermeture $sor2 $!";
+if ($lang eq 'perl6') {
+  my $fic1 = 'test-data-astro';
+  open my $f1, '>', $fic1
+    or die "ouverture $fic1 $!";
+  for (@lignes) {
+    my ($re_y, $gr_y, $equi_d, $arit_d) = $_ =~ /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
+    printf $f1 "%4d  1  1    %4d  9 %2d    %4d  9 %2d\n", $re_y, $gr_y, $equi_d, $gr_y, $arit_d;
+  }
+  close $f1
+    or die "fermeture $fic1 $!";
+}
 
 __END__ 
 
@@ -106,9 +120,11 @@ gen-astro-tests -- un programme pour générer une liste de tests pour la règle
 
 =item lang
 
-Target language. For the moment, the only accepted language is Pascal.
+Target language. For the moment, the only accepted language are Pascal
+and Perl6 (written with no space).
 
-Langage de destination. Pour l'instant, seul Pascal est accepté.
+Langage de  destination. Pour l'instant,  seul Pascal et  Perl6 (écrit
+sans espace) sont acceptés.
 
 =item nb
 
@@ -154,11 +170,15 @@ Aucune incompatibilité identifiée.
 
 =head1 BUGS AND LIMITS
 
-No known bugs in this script.
+The script gives  slightly different results when  calling C<clisp> or
+C<gcl>  to  compute  the  autumn  equinox  value.  Need  some  further
+analysis.
 
 =head1 BOGUES ET LIMITES
 
-Aucune erreur identifiée dans ce script.
+Ce  programme  donne  des  résultats  légèrements  différents  lorsque
+l'interpréteur Common Lisp  appelé est C<clisp> ou  C<gcl>. À regarder
+de plus près.
 
 =head1 AUTHOR / AUTEUR
 
