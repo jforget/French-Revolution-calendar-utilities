@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
-# Generating some code for the astronomical rule in the Pascal program
+# Generating some code for the astronomical rule in the Pascal program and the Perl 6 module.
 # Génération d'une partie du code pour la règle des équinoxes dans le programme Pascal
+#    et le module Perl 6.
 #
 # Copyright (C) 2019, Jean Forget
 #
@@ -44,12 +45,13 @@ if ($lang ne 'pascal' && $lang ne 'text' && $lang ne 'perl6') {
   die "Unknown language: '$lang'";
 }
 
-my $lisp ="/usr/bin/clisp";
-my $pgl  ="cmpeq.cl";
+my $lisp      = "/usr/bin/gcl";
+my @lisp_args = ( "-f" );
+my $pgl       = "cmpeq.cl";
 
 my @result = ([], [], [], []);
 
-my @lines = qx/$lisp $pgl $nb/;
+my @lines = qx/$lisp @lisp_args $pgl $nb/;
 for (@lines) {
   my ($re_y, $gr_y, $equi_d, $arit_d) = $_ =~ /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
   my $modulo = $gr_y % 4;
@@ -161,14 +163,15 @@ __END__
 
 =head1 NAME / NOM
 
-gen-astro-code -- a program to generate some Pascal code for the equinox rule
+gen-astro-code -- a program to generate some Pascal or Perl 6 code for the equinox rule
 
-gen-astro-code -- un programme pour générer une partie du code Pascal pour la règle des équinoxes
+gen-astro-code -- un programme pour générer une partie du code Pascal ou Perl 6 pour la règle des équinoxes
 
 =head1 UTILISATION
 
   gen-astro-code --lang=text   --nb=20
   gen-astro-code --lang=pascal --nb=6000
+  gen-astro-code --lang=perl6  --nb=6000
 
 =head1 CALL PARAMETERS / PARAMÈTRES D'APPEL
 
@@ -196,14 +199,14 @@ Nombre d'années à inclure dans le code cible.
 =head1 DESCRIPTION (ENGLISH)
 
 This program generates a portion of  the code to implement the equinox
-rule  in  the Pascal  program  so  it will  give  the  same values  as
-F<calendrica-3.0.cl>.
+rule in the  Pascal program and in  the Perl 6 module so  it will give
+the same values as F<calendar.l>.
 
 =head1 DESCRIPTION (FRANCAIS)
 
 Ce programme  génère une partie du  code destiné à mettre  en œuvre la
-règle des équinoxes dans le programme Pascal et pour obtenir les mêmes
-valeurs que F<calendrica-3.0.cl>.
+règle des équinoxes dans le programme  Pascal et dans le module Perl 6
+pour obtenir les mêmes valeurs que F<calendar.l>.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
@@ -217,7 +220,7 @@ F<DateTime>
 
 F<DateTime::Calendar::FrenchRevolutionary> version 0.12
 
-F<calendrica-3.0.cl>.
+F<calendar.l>.
 
 v5.10 : C<say>, F<Getopt::Long> (core module)
 
@@ -229,15 +232,18 @@ Aucune incompatibilité identifiée.
 
 =head1 BUGS AND LIMITS
 
-The script gives  slightly different results when  calling C<clisp> or
-C<gcl>  to  compute  the  autumn  equinox  value.  Need  some  further
-analysis.
+When used  with F<calendrica-3.0.cl>,  the script was  giving slightly
+different  results when  calling  C<clisp> or  C<gcl>  to compute  the
+autumn equinox value. Now,  with F<calendar.l>, both interpreters give
+the same results.
 
 =head1 BOGUES ET LIMITES
 
-Ce  programme  donne  des  résultats  légèrements  différents  lorsque
-l'interpréteur Common Lisp  appelé est C<clisp> ou  C<gcl>. À regarder
-de plus près.
+Lorsqu'il fonctionnait avec F<calendrica-3.0.cl>, ce programme donnait
+des résultats  légèrements différents selon que  l'interpréteur Common
+Lisp appelé était C<clisp> ou C<gcl>. Maintenant que le programme fait
+appel   à   F<calendar.l>,  les   résultats   ne   dépendent  pas   de
+l'interpréteur.
 
 =head1 AUTHOR / AUTEUR
 
@@ -267,8 +273,11 @@ L<https://github.com/jforget/emacs-lisp-cal-french>, a fork of F<calendar/cal-fr
 
 =head3 Not by me / Pas par moi
 
-CALENDRICA 3.0 -- Common Lisp, which can be downloaded in the "Resources" section of
+CALENDRICA 3.0 (an old version) -- Common Lisp, which can be downloaded in the "Resources" section of
 L<http://www.cambridge.org/us/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-3rd-edition?format=PB&isbn=9780521702386>
+
+CALENDRICA 4.0 (the latest version) -- Common Lisp, which can be download in the "Resources" section of
+L<https://www.cambridge.org/us/academic/subjects/computer-science/computing-general-interest/calendrical-calculations-ultimate-edition-4th-edition?format=PB&isbn=9781107683167>
 
 French Calendar for Android at
 L<https://f-droid.org/packages/ca.rmen.android.frenchcalendar/>
@@ -281,7 +290,7 @@ A Ruby program at L<https://github.com/jhbadger/FrenchRevCal-ruby>
 
 =head2 Books / Livres
 
-Quid 2001, M and D Frémy, publ. Robert Laffont
+Quid 2006, M and D Frémy, publ. Robert Laffont ISBN 2-221-10448-X page 341.
 
 Agenda Républicain 197 (1988/89), publ. Syros Alternatives
 
